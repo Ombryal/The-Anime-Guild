@@ -14,7 +14,7 @@ body {
     margin: 0;
 }
 
-/* Scanline Effect Overlay */
+/* --- SYSTEM OVERLAYS --- */
 .cyber-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -31,29 +31,29 @@ body {
     margin: 0 auto;
 }
 
-/* Node Styling */
+/* --- HIERARCHY NODES --- */
 .node-container {
     position: relative;
     background: var(--panel-bg);
     border: 1px solid rgba(0, 243, 255, 0.3);
     padding: 10px;
-    margin: 10px;
-    width: 200px;
+    margin: 10px auto;
+    width: 220px;
     display: flex;
     align-items: center;
     clip-path: polygon(0 0, 90% 0, 100% 20%, 100% 100%, 10% 100%, 0 80%);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.4s ease;
 }
 
 .node-container.online {
     border-color: var(--neon-cyan);
-    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2), inset 0 0 10px rgba(0, 243, 255, 0.1);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
     opacity: 1;
 }
 
 .node-container:not(.online) {
-    opacity: 0.4;
-    filter: saturate(0);
+    opacity: 0.5;
+    filter: saturate(0.2);
 }
 
 .node-pfp {
@@ -64,13 +64,7 @@ body {
     margin-right: 12px;
     background-size: cover;
     background-position: center;
-}
-
-.role-tag {
-    font-size: 9px;
-    display: block;
-    color: var(--neon-blue);
-    text-transform: uppercase;
+    background-repeat: no-repeat;
 }
 
 .username {
@@ -78,59 +72,28 @@ body {
     font-weight: bold;
     color: #fff;
     text-shadow: 0 0 5px var(--neon-cyan);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* Scanner Animation */
+/* --- ANIMATIONS --- */
 .scanner-line {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 2px;
     background: var(--neon-cyan);
     box-shadow: 0 0 10px var(--neon-cyan);
     animation: scan 3s linear infinite;
-    opacity: 0.5;
 }
 
-@keyframes scan {
-    0% { top: 0%; }
-    100% { top: 100%; }
-}
+@keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
 
-/* Hierarchy Connector Lines */
-.connector::before {
-    content: '';
-    width: 2px;
-    height: 20px;
-    background: var(--neon-cyan);
-    display: block;
-    margin: -10px auto 0;
-    box-shadow: 0 0 8px var(--neon-cyan);
-}
-
-/* Mod Grid */
-.mod-deployment-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.node-container.mod {
-    width: 60px;
-    height: 60px;
-    padding: 0;
-    justify-content: center;
-}
-
-.node-container.mod .node-pfp {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-}
-
-/* Orbit Complex */
+/* --- ORBIT COMPLEX (THE FIX) --- */
 .orbit-complex {
-    margin-top: 60px;
+    margin-top: 80px;
     text-align: center;
+    position: relative;
+    padding-bottom: 40px;
 }
 
 #orbit-viewport {
@@ -138,47 +101,152 @@ body {
     width: 300px;
     height: 300px;
     margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .ring {
     position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    border: 1px dashed rgba(0, 243, 255, 0.3);
+    border: 1px dashed rgba(0, 243, 255, 0.2);
     border-radius: 50%;
+    pointer-events: none;
 }
 
 #ring-outer { width: 280px; height: 280px; animation: rotate 40s linear infinite; }
-#ring-inner { width: 220px; height: 220px; animation: rotate 20s linear reverse infinite; }
+#ring-inner { width: 200px; height: 200px; animation: rotate 25s linear reverse infinite; }
 
 #member-orbit-field {
     position: absolute;
-    width: 100%; height: 100%;
+    width: 100%;
+    height: 100%;
     animation: rotate 30s linear infinite;
 }
 
 .orbit-node {
     position: absolute;
-    width: 35px; height: 35px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
-    border: 1px solid var(--neon-cyan);
+    border: 2px solid var(--neon-cyan);
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 0 10px var(--neon-cyan);
     animation: counterRotate 30s linear infinite;
+    z-index: 10;
 }
 
-@keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes counterRotate { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+@keyframes rotate { 
+    from { transform: rotate(0deg); } 
+    to { transform: rotate(360deg); } 
+}
 
-/* Glitch Effect */
+@keyframes counterRotate { 
+    from { transform: rotate(0deg); } 
+    to { transform: rotate(-360deg); } 
+}
+
+/* --- TEXT EFFECTS --- */
 .glitch-title {
-    font-size: 24px;
-    font-weight: 900;
-    position: relative;
-    text-shadow: 0.05em 0 0 var(--neon-red), -0.025em -0.05em 0 var(--neon-cyan);
-    animation: glitch 1s infinite;
+    font-size: 20px;
+    text-align: center;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    animation: glitch 2s infinite;
 }
 
 @keyframes glitch {
-    0% { text-shadow: 0.05em 0 0 var(--neon-red), -0.025em -0.05em 0 var(--neon-cyan); }
-    15% { text-shadow: -0.05em -0.025em 0 var(--neon-red), 0.025em 0.025em 0 var(--neon-cyan); }
-    100% { text-shadow: -0.025em 0 0 var(--neon-red), -0.025em -0.025em 0 var(--neon-cyan); }
+    0% { text-shadow: 2px 0 var(--neon-red), -2px 0 var(--neon-blue); }
+    50% { text-shadow: -2px 0 var(--neon-red), 2px 0 var(--neon-blue); }
+    100% { text-shadow: 2px 0 var(--neon-red), -2px 0 var(--neon-blue); }
+}
+
+.bottom-stats {
+    font-size: 10px;
+    margin-top: 20px;
+    letter-spacing: 2px;
+    color: var(--neon-blue);
+}
+
+/* --- THE RADAR SWEEP LAYER --- */
+#orbit-viewport::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 280px; /* Matches the outer ring size */
+    height: 280px;
+    margin-top: -140px;
+    margin-left: -140px;
+    background: conic-gradient(
+        from 0deg,
+        transparent 0%,
+        rgba(0, 243, 255, 0.2) 10%,
+        rgba(0, 243, 255, 0.6) 15%,
+        transparent 20%
+    );
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 5;
+    animation: radar-sweep 4s linear infinite;
+}
+
+/* --- THE GLOWING RADAR BEAM --- */
+@keyframes radar-sweep {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* --- ORBIT NODE ENHANCEMENTS --- */
+.orbit-node {
+    position: absolute;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 2px solid var(--neon-cyan);
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 0 10px var(--neon-cyan);
+    z-index: 10;
+    /* This makes the avatars spin opposite the ring so they stay upright */
+    animation: counterRotate 30s linear infinite;
+}
+
+/* Pulse effect for the "Blips" */
+.orbit-node::after {
+    content: '';
+    position: absolute;
+    top: -5px; left: -5px; right: -5px; bottom: -5px;
+    border: 1px solid var(--neon-cyan);
+    border-radius: 50%;
+    animation: blip-pulse 2s ease-out infinite;
+    opacity: 0;
+}
+
+@keyframes blip-pulse {
+    0% { transform: scale(0.8); opacity: 0.8; }
+    100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* --- GHOST RING PULSE --- */
+.ring {
+    position: absolute;
+    border: 1px dashed rgba(0, 243, 255, 0.2);
+    border-radius: 50%;
+    pointer-events: none;
+    transition: border-color 0.3s;
+}
+
+#ring-outer { 
+    width: 280px; 
+    height: 280px; 
+    animation: rotate 40s linear infinite; 
+    border-color: rgba(0, 243, 255, 0.4);
+}
+
+#ring-inner { 
+    width: 200px; 
+    height: 200px; 
+    animation: rotate 25s linear reverse infinite; 
 }
