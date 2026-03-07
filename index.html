@@ -3,63 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Command Hierarchy</title>
+    <title>Advanced Discord Command Interface</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <header id="discord-mega-widget">
-        <div class="hierarchy-container">
-            <div class="tree-row">
-                <div class="node owner" id="slot-683212245311946795">
-                    <div class="node-label">OWNER</div>
-                    <div class="pfp-holder"><img src="" alt="?"></div>
-                </div>
+    <div class="cyber-overlay"></div>
+    <div class="interface-frame">
+        <header class="top-header">
+            <div class="glitch-title" data-text="SYSTEM_HIERARCHY_v4.0">SYSTEM_HIERARCHY_v4.0</div>
+            <div class="status-box">
+                <span class="label">SIGNAL:</span>
+                <span id="signal-status" class="value pulse-green">ESTABLISHED</span>
             </div>
+        </header>
 
-            <div class="tree-row connector-v">
-                <div class="node co-owner" id="slot-959431187955351623">
-                    <div class="node-label">CO-OWNER</div>
-                    <div class="pfp-holder"><img src="" alt="?"></div>
+        <main id="command-center">
+            <section class="hierarchy-tree">
+                <div class="rank-tier">
+                    <div class="node-container" data-id="683212245311946795" data-role="OWNER">
+                        <div class="scanner-line"></div>
+                        <div class="node-pfp"></div>
+                        <div class="node-info">
+                            <span class="role-tag">LVL_01 // OWNER</span>
+                            <span class="username">OFFLINE</span>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="tree-row connector-v">
-                <div class="node s-admin" id="slot-183900012705480705">
-                    <div class="node-label">SUPER ADMIN</div>
-                    <div class="pfp-holder"><img src="" alt="?"></div>
+                <div class="rank-tier connector">
+                    <div class="node-container" data-id="959431187955351623" data-role="CO-OWNER">
+                        <div class="scanner-line"></div>
+                        <div class="node-pfp"></div>
+                        <div class="node-info">
+                            <span class="role-tag">LVL_02 // CO-OWNER</span>
+                            <span class="username">OFFLINE</span>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="tree-row connector-v">
-                <div class="node admin" id="slot-1398034278662537337">
-                    <div class="node-label">ADMIN</div>
-                    <div class="pfp-holder"><img src="" alt="?"></div>
+                <div class="rank-tier connector">
+                    <div class="node-container admin" data-id="183900012705480705" data-role="S-ADMIN">
+                        <div class="node-pfp"></div>
+                        <div class="node-info"><span class="role-tag">S_ADMIN</span><span class="username">OFFLINE</span></div>
+                    </div>
+                    <div class="node-container admin" data-id="1398034278662537337" data-role="ADMIN">
+                        <div class="node-pfp"></div>
+                        <div class="node-info"><span class="role-tag">ADMIN</span><span class="username">OFFLINE</span></div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="tree-row connector-branch">
-                <div class="mod-grid">
-                    <div class="node mod" id="slot-1388087779174383719"><div class="pfp-holder small"></div></div>
-                    <div class="node mod" id="slot-287809220210851851"><div class="pfp-holder small"></div></div>
-                    <div class="node mod" id="slot-368838581009252362"><div class="pfp-holder small"></div></div>
-                    <div class="node mod" id="slot-916731589893959710"><div class="pfp-holder small"></div></div>
-                    <div class="node mod" id="slot-226914498089451520"><div class="pfp-holder small"></div></div>
-                    <div class="node mod" id="slot-531178595130015755"><div class="pfp-holder small"></div></div>
-                    <div class="node mod" id="slot-652983918013841429"><div class="pfp-holder small"></div></div>
-                    <div class="node mod" id="slot-556714289453465601"><div class="pfp-holder small"></div></div>
+                <div class="rank-tier mod-grid-header">TACTICAL_MOD_UNITS</div>
+                <div class="mod-deployment-grid">
+                    <div class="node-container mod" data-id="1388087779174383719"></div>
+                    <div class="node-container mod" data-id="287809220210851851"></div>
+                    <div class="node-container mod" data-id="368838581009252362"></div>
+                    <div class="node-container mod" data-id="916731589893959710"></div>
+                    <div class="node-container mod" data-id="226914498089451520"></div>
+                    <div class="node-container mod" data-id="531178595130015755"></div>
+                    <div class="node-container mod" data-id="652983918013841429"></div>
+                    <div class="node-container mod" data-id="556714289453465601"></div>
                 </div>
-            </div>
-        </div>
+            </section>
 
-        <div class="orbit-stage">
-            <div id="orbit-ring-container">
+            <section class="orbit-complex">
+                <div class="ring-label">ACTIVE_SIGNAL_ORBIT</div>
+                <div id="orbit-viewport">
+                    <div id="ring-outer" class="ring"></div>
+                    <div id="ring-inner" class="ring"></div>
+                    <div id="member-orbit-field"></div>
                 </div>
-            <div class="orbit-meta">
-                <span id="member-count">0</span> MEMBERS ONLINE
-            </div>
-        </div>
-    </header>
+                <div class="bottom-stats">
+                    <span id="active-count">00</span> // CONNECTED_MEMBERS
+                </div>
+            </section>
+        </main>
+    </div>
 
     <script src="script.js"></script>
 </body>
