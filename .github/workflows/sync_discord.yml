@@ -1,0 +1,47 @@
+name: Discord Data Sync
+on:
+  schedule:
+    - cron: '0 * * * *' # Runs every hour
+  workflow_dispatch: # Allows you to run it manually
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Fetch Discord Data
+        env:
+          BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          GUILD_ID: '1433645535583277129'
+        run: |
+          # This script uses 'curl' to talk to Discord's API directly
+          # It fetches user objects for your specific staff list
+          USER_IDS=("683212245311946795" "959431187955351623" "183900012705480705")
+          
+          echo "{\"last_updated\": \"$(date -u)\", \"members\": [" > staff_data.json
+          
+          for ID in "${USER_IDS[@]}"; do
+            RESPONSE=$(curl -s -H "Authorization: Bot $BOT_TOKEN" \
+              "https://discord.com/api/v10/users/$ID")
+            
+            NAME=$(echo $RESPONSE | jq -r '.username')
+            AVATAR=$(echo $RESPONSE | jq -r '.avatar')
+            # Format the CDN link
+            AVATAR_URL="https://cdn.discordapp.com/avatars/$ID/$AVATAR.png"
+            
+            echo "{\"id\": \"$ID\", \"name\": \"$NAME\", \"avatar\": \"$AVATAR_URL\"}," >> staff_data.json
+          done
+          
+          # Clean up the JSON trailing comma and close it
+          sed -i '$ s/.$//' staff_data.json
+          echo "]}" >> staff_data.json
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "System-Sync-Bot"
+          git config --global user.email "actions@github.com"
+          git add staff_data.json
+          git commit -m "Automated Discord Sync [skip ci]" || exit 0
+          git push
