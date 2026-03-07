@@ -3,32 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Orbit Widget</title>
+    <title>Discord Command Hierarchy</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="discord-widget-wrapper">
-        <div id="orbit-container">
-            
-            <div id="widget-loader">
-                <div class="spinner"></div>
-                <p>Connecting to Discord...</p>
-            </div>
-
-            <div id="orbit-center" class="hidden">
-                <div class="pulse-ring"></div>
-                <img id="server-icon" src="" alt="Server Icon">
-                <div class="server-info">
-                    <span id="server-name">Loading...</span>
-                    <span id="online-count">0 Online</span>
+    <header id="discord-mega-widget">
+        <div class="hierarchy-container">
+            <div class="tree-row">
+                <div class="node owner" id="slot-683212245311946795">
+                    <div class="node-label">OWNER</div>
+                    <div class="pfp-holder"><img src="" alt="?"></div>
                 </div>
             </div>
 
-            <div id="member-orbit-ring" class="rotating-ring"></div>
+            <div class="tree-row connector-v">
+                <div class="node co-owner" id="slot-959431187955351623">
+                    <div class="node-label">CO-OWNER</div>
+                    <div class="pfp-holder"><img src="" alt="?"></div>
+                </div>
+            </div>
 
+            <div class="tree-row connector-v">
+                <div class="node s-admin" id="slot-183900012705480705">
+                    <div class="node-label">SUPER ADMIN</div>
+                    <div class="pfp-holder"><img src="" alt="?"></div>
+                </div>
+            </div>
+
+            <div class="tree-row connector-v">
+                <div class="node admin" id="slot-1398034278662537337">
+                    <div class="node-label">ADMIN</div>
+                    <div class="pfp-holder"><img src="" alt="?"></div>
+                </div>
+            </div>
+
+            <div class="tree-row connector-branch">
+                <div class="mod-grid">
+                    <div class="node mod" id="slot-1388087779174383719"><div class="pfp-holder small"></div></div>
+                    <div class="node mod" id="slot-287809220210851851"><div class="pfp-holder small"></div></div>
+                    <div class="node mod" id="slot-368838581009252362"><div class="pfp-holder small"></div></div>
+                    <div class="node mod" id="slot-916731589893959710"><div class="pfp-holder small"></div></div>
+                    <div class="node mod" id="slot-226914498089451520"><div class="pfp-holder small"></div></div>
+                    <div class="node mod" id="slot-531178595130015755"><div class="pfp-holder small"></div></div>
+                    <div class="node mod" id="slot-652983918013841429"><div class="pfp-holder small"></div></div>
+                    <div class="node mod" id="slot-556714289453465601"><div class="pfp-holder small"></div></div>
+                </div>
+            </div>
         </div>
-    </div>
+
+        <div class="orbit-stage">
+            <div id="orbit-ring-container">
+                </div>
+            <div class="orbit-meta">
+                <span id="member-count">0</span> MEMBERS ONLINE
+            </div>
+        </div>
+    </header>
+
     <script src="script.js"></script>
 </body>
 </html>
