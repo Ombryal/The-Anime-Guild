@@ -1,66 +1,94 @@
-const SERVER_ID = '1433645535583277129';
+/** * DISCORD COMMAND CENTER LOGIC v4.0
+ * Handles real-time API integration and dynamic UI population
+ */
 
-// Map of IDs to be placed in the Hierarchy
-const HIERARCHY_MAP = [
-    '683212245311946795', // Owner
-    '959431187955351623', // Co-owner
-    '183900012705480705', // Super Admin
-    '1398034278662537337', // Admin
-    '1388087779174383719', '287809220210851851', '368838581009252362', 
-    '916731589893959710', '226914498089451520', '531178595130015755', 
-    '652983918013841429', '556714289453465601' // Mods
+const SERVER_ID = '1433645535583277129';
+const SILHOUETTE = 'https://archive.org/download/discord_default_avatars/gray.png';
+
+// Dynamic Staff Mapping
+const STAFF_RECORDS = [
+    { id: '683212245311946795', role: 'OWNER' },
+    { id: '959431187955351623', role: 'CO-OWNER' },
+    { id: '183900012705480705', role: 'SUPER ADMIN' },
+    { id: '1398034278662537337', role: 'ADMIN' },
+    { id: '1388087779174383719', role: 'MOD' },
+    { id: '287809220210851851', role: 'MOD' },
+    { id: '368838581009252362', role: 'MOD' },
+    { id: '916731589893959710', role: 'MOD' },
+    { id: '226914498089451520', role: 'MOD' },
+    { id: '531178595130015755', role: 'MOD' },
+    { id: '652983918013841429', role: 'MOD' },
+    { id: '556714289453465601', role: 'MOD' }
 ];
 
-async function updateWidget() {
+async function syncSystem() {
+    console.log(">> Initiating System Sync...");
     try {
         const response = await fetch(`https://discord.com/api/guilds/${SERVER_ID}/widget.json`);
         const data = await response.json();
         
-        document.getElementById('member-count').innerText = data.presence_count;
+        // Update Counter
+        document.getElementById('active-count').innerText = data.presence_count < 10 ? `0${data.presence_count}` : data.presence_count;
 
-        const onlineMembers = data.members;
-        const orbitPool = [];
+        const onlineList = data.members;
+        const staffIds = STAFF_RECORDS.map(s => s.id);
 
-        // 1. Process Hierarchy
-        HIERARCHY_MAP.forEach(id => {
-            const member = onlineMembers.find(m => m.id === id);
-            const slot = document.getElementById(`slot-${id}`);
-            
-            if (member && slot) {
-                slot.classList.add('is-online');
-                const img = slot.querySelector('img') || document.createElement('img');
-                img.src = member.avatar_url;
-                if (!slot.querySelector('img')) slot.querySelector('.pfp-holder').appendChild(img);
+        // Populate Hierarchy Nodes
+        const nodes = document.querySelectorAll('.node-container');
+        nodes.forEach(node => {
+            const uid = node.getAttribute('data-id');
+            const member = onlineList.find(m => m.id === uid);
+            const pfpEl = node.querySelector('.node-pfp');
+            const nameEl = node.querySelector('.username');
+
+            if (member) {
+                node.classList.add('online');
+                if (pfpEl) pfpEl.style.backgroundImage = `url('${member.avatar_url}')`;
+                if (nameEl) nameEl.innerText = member.username.toUpperCase();
+            } else {
+                node.classList.remove('online');
+                if (pfpEl) pfpEl.style.backgroundImage = `url('${SILHOUETTE}')`;
+                if (nameEl) nameEl.innerText = "OFFLINE";
             }
         });
 
-        // 2. Process Orbit Pool (Anyone online NOT in the hierarchy)
-        const orbitContainer = document.getElementById('orbit-ring-container');
-        orbitContainer.innerHTML = '';
+        // Populate Orbit Field
+        const orbitField = document.getElementById('member-orbit-field');
+        orbitField.innerHTML = '';
         
-        const generalMembers = onlineMembers.filter(m => !HIERARCHY_MAP.includes(m.id));
-        const total = Math.min(generalMembers.length, 12); // Limit orbit to 12 for visual clarity
+        const civilianMembers = onlineList.filter(m => !staffIds.includes(m.id));
+        const maxOrbit = 15; // Max planets in the ring
+        
+        civilianMembers.slice(0, maxOrbit).forEach((m, i) => {
+            const angle = (i / Math.min(civilianMembers.length, maxOrbit)) * (Math.PI * 2);
+            const radius = 120;
+            const x = Math.cos(angle) * radius + 150 - 17;
+            const y = Math.sin(angle) * radius + 150 - 17;
 
-        generalMembers.slice(0, total).forEach((member, i) => {
-            const angle = (i / total) * (2 * Math.PI);
-            const x = Math.cos(angle) * 75 + 60; // 75 is radius
-            const y = Math.sin(angle) * 75 + 60;
+            const div = document.createElement('div');
+            div.className = 'orbit-node';
+            div.style.left = `${x}px`;
+            div.style.top = `${y}px`;
+            div.style.backgroundImage = `url('${m.avatar_url}')`;
+            div.style.backgroundSize = 'cover';
+            div.title = m.username;
 
-            const img = document.createElement('img');
-            img.src = member.avatar_url;
-            img.className = 'orbit-pfp';
-            img.style.left = `${x}px`;
-            img.style.top = `${y}px`;
-            img.title = member.username;
-            
-            orbitContainer.appendChild(img);
+            orbitField.appendChild(div);
         });
 
-    } catch (e) {
-        console.error("Widget fetch failed. Ensure widget is enabled in Discord settings.", e);
+        document.getElementById('signal-status').innerText = "ESTABLISHED";
+        document.getElementById('signal-status').className = "value pulse-green";
+
+    } catch (err) {
+        console.error(">> Critical System Error:", err);
+        document.getElementById('signal-status').innerText = "LINK_LOST";
+        document.getElementById('signal-status').className = "value pulse-red";
     }
 }
 
-// Refresh every 60 seconds
-setInterval(updateWidget, 60000);
-updateWidget();
+// System Boot
+document.addEventListener('DOMContentLoaded', () => {
+    syncSystem();
+    // Re-sync every 45 seconds
+    setInterval(syncSystem, 45000);
+});
