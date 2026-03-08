@@ -1,27 +1,24 @@
 // ============================================
-// LIQUID GLASS COMMAND CENTER – FULL SYSTEM INTERFACE
+// LIQUID GLASS COMMAND CENTER – FINAL SYSTEM INTERFACE
 // ============================================
 
 const SERVER_ID = '1433645535583277129';
 const SILHOUETTE = 'https://archive.org/download/discord_default_avatars/gray.png';
 
-// ---------- GLOBAL REFERENCES ----------
-let staffDatabase = [];          // will hold loaded staff data
-let onlineMembers = [];           // last fetched online list
-let logContainer = null;
-let userDetailModal, streamModal;
-let currentAudioEnabled = false;  // to handle autoplay restrictions
+// ---------- GLOBAL STATE ----------
+let staffDatabase = { members: [], roles: {} };   // from staff_data.json
+let onlineMembers = [];                           // from widget
+let logContainer, userDetailModal, streamModal;
+let currentAudioEnabled = false;
 
 // ---------- INITIALIZATION ----------
 document.addEventListener('DOMContentLoaded', () => {
-    // Store modal references
     userDetailModal = document.getElementById('user-detail-modal');
     streamModal = document.getElementById('stream-modal');
     logContainer = document.getElementById('log-body');
 
-    // Initialize all components
-    initParticles();          // from your original code
-    initTilt();               // from your original code
+    initParticles();
+    initTilt();
     initClock();
     initBattery();
     initFilters();
@@ -29,15 +26,13 @@ document.addEventListener('DOMContentLoaded', () => {
     initDraggable();
     initAudioOnFirstInteraction();
 
-    // Start data sync
     syncSystem();
     setInterval(syncSystem, 25000);
 
-    // Add initial log entries
     addLog('System initialized. Awaiting data...');
 });
 
-// ---------- ORIGINAL FUNCTIONS (kept intact) ----------
+// ========== ORIGINAL FUNCTIONS (unchanged) ==========
 class Particle {
     constructor(canvas, color) {
         this.canvas = canvas;
@@ -112,7 +107,7 @@ function initTilt() {
     });
 }
 
-// ---------- NEW FEATURE: SYSTEM CLOCK ----------
+// ========== NEW FEATURE: CLOCK ==========
 function initClock() {
     updateClock();
     setInterval(updateClock, 1000);
@@ -125,7 +120,7 @@ function updateClock() {
     }
 }
 
-// ---------- NEW FEATURE: BATTERY ----------
+// ========== NEW FEATURE: BATTERY ==========
 function initBattery() {
     if ('getBattery' in navigator) {
         navigator.getBattery().then(battery => {
@@ -136,7 +131,7 @@ function initBattery() {
         // Fake battery drain for effect
         let fakeLevel = 87;
         setInterval(() => {
-            fakeLevel = (fakeLevel - 1 + 100) % 100; // cycles 87->86->...->0->100...
+            fakeLevel = (fakeLevel - 1 + 100) % 100; // cycles 87->86...->0->100...
             document.getElementById('battery-level').textContent = `🔋 ${fakeLevel}%`;
         }, 30000);
     }
@@ -146,12 +141,11 @@ function updateBattery(level) {
     document.getElementById('battery-level').textContent = `🔋 ${percent}%`;
 }
 
-// ---------- NEW FEATURE: FILTER BUTTONS ----------
+// ========== NEW FEATURE: FILTER BUTTONS ==========
 function initFilters() {
     const filterBtns = document.querySelectorAll('.filter-btn');
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            // Update active state
             filterBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
@@ -182,94 +176,15 @@ function initFilters() {
     });
 }
 
-// ---------- NEW FEATURE: MODALS ----------
+// ========== NEW FEATURE: MODAL HANDLING ==========
 function initModals() {
-    // Close modals when clicking outside content
     window.addEventListener('click', (e) => {
         if (e.target === streamModal) streamModal.style.display = 'none';
         if (e.target === userDetailModal) userDetailModal.style.display = 'none';
     });
 }
 
-// Show user detail modal with enriched data
-function showUserModal(node, userData, isOnline, activity) {
-    const modal = userDetailModal;
-    if (!modal) return;
-
-    // Get user info from staffDatabase or widget
-    const uid = node.dataset.id;
-    const staffInfo = staffDatabase.find(m => m.id === uid) || {};
-    const username = userData?.username || staffInfo.name || 'UNKNOWN';
-    const avatar = userData?.avatar_url || staffInfo.avatar || SILHOUETTE;
-
-    // Set avatar and name
-    document.getElementById('modal-avatar').style.backgroundImage = `url('${avatar}')`;
-
-    // Determine role based on node class
-    let roleText = 'MEMBER';
-    let roleClass = '';
-    if (node.classList.contains('tier-gold')) { roleText = 'SUPREME OWNER'; roleClass = 'owner'; }
-    else if (node.classList.contains('tier-crimson')) { roleText = 'CO-OWNER'; roleClass = 'coowner'; }
-    else if (node.classList.contains('tier-purple')) { roleText = 'SUPER ADMIN'; roleClass = 'admin'; }
-    else if (node.classList.contains('tier-blue')) { roleText = 'ADMIN'; roleClass = 'admin'; }
-    else if (node.classList.contains('tier-green')) { roleText = 'MODERATOR'; roleClass = 'mod'; }
-
-    document.getElementById('modal-username').textContent = username.toUpperCase();
-    const roleSpan = document.getElementById('modal-role');
-    roleSpan.textContent = roleText;
-    roleSpan.className = `user-role ${roleClass}`;
-
-    // Activity section
-    const activityDiv = document.getElementById('modal-activity');
-    let activityHtml = '';
-    if (isOnline && activity) {
-        const appName = activity.name || '';
-        if (appName.toLowerCase().includes('spotify')) {
-            // Mock Spotify data – in real app you'd get track from presence
-            activityHtml = `
-                <div class="user-activity spotify">
-                    <img src="https://cdn.simpleicons.org/spotify/1DB954" alt="Spotify"> 
-                    <strong>LISTENING TO SPOTIFY</strong><br>
-                    <span style="font-size:13px;">♫ Unknown Track – extract from presence</span>
-                </div>
-            `;
-        } else if (activity.type === 1) { // Twitch streaming (activity type 1)
-            activityHtml = `
-                <div class="user-activity twitch">
-                    <img src="https://cdn.simpleicons.org/twitch/9146FF" alt="Twitch"> 
-                    <strong>LIVE ON TWITCH</strong><br>
-                    <span style="font-size:13px;">${activity.name || 'Streaming'}</span><br>
-                    <button class="filter-btn" onclick="document.getElementById('stream-frame').src='https://twitch.tv/...'; document.getElementById('stream-modal').style.display='flex';">WATCH STREAM</button>
-                </div>
-            `;
-        } else {
-            activityHtml = `
-                <div>
-                    <img src="https://icon.horse/icon/${appName.replace(/\s+/g, '')}.com" class="app-icon" onerror="this.style.display='none'"> 
-                    <strong>USING ${appName.toUpperCase()}</strong>
-                </div>
-            `;
-        }
-    } else {
-        activityHtml = '<div>User is offline</div>';
-    }
-    activityDiv.innerHTML = activityHtml;
-
-    // Discord roles (mock for now – you can expand later)
-    const rolesDiv = document.getElementById('modal-discord-roles');
-    // You could fetch actual roles from your bot; for now show static based on tier
-    const roles = [];
-    if (node.classList.contains('tier-gold')) roles.push('SUPREME OWNER', 'ADMIN', 'MOD', 'EVERYONE');
-    else if (node.classList.contains('tier-crimson')) roles.push('CO-OWNER', 'ADMIN', 'MOD', 'EVERYONE');
-    else if (node.classList.contains('tier-purple')) roles.push('SUPER ADMIN', 'MOD', 'EVERYONE');
-    else if (node.classList.contains('tier-blue')) roles.push('ADMIN', 'MOD', 'EVERYONE');
-    else if (node.classList.contains('tier-green')) roles.push('MOD', 'EVERYONE');
-    rolesDiv.innerHTML = `<strong>DISCORD ROLES:</strong> ${roles.join(' • ')}`;
-
-    modal.style.display = 'flex';
-}
-
-// ---------- NEW FEATURE: DRAGGABLE WINDOWS (interact.js) ----------
+// ========== NEW FEATURE: DRAGGABLE WINDOWS (interact.js) ==========
 function initDraggable() {
     if (typeof interact === 'undefined') return;
     interact('.draggable').draggable({
@@ -281,11 +196,10 @@ function initDraggable() {
             })
         ],
         listeners: {
-            move (event) {
+            move(event) {
                 const target = event.target;
                 const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
                 const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-
                 target.style.transform = `translate(${x}px, ${y}px)`;
                 target.setAttribute('data-x', x);
                 target.setAttribute('data-y', y);
@@ -294,86 +208,11 @@ function initDraggable() {
     });
 }
 
-// ---------- NEW FEATURE: SYSTEM LOGS ----------
-function addLog(message) {
-    if (!logContainer) return;
-    const entry = document.createElement('div');
-    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    entry.textContent = `[${timestamp}] ${message}`;
-    logContainer.appendChild(entry);
-    logContainer.scrollTop = logContainer.scrollHeight;
-    // Keep only last 50 entries to avoid overflow
-    while (logContainer.children.length > 50) {
-        logContainer.removeChild(logContainer.firstChild);
-    }
-}
-
-// ---------- NEW FEATURE: ADAPTIVE THEME (background tint) ----------
-function updateAdaptiveTheme() {
-    const nodes = document.querySelectorAll('.node-container');
-    const priority = ['tier-gold', 'tier-crimson', 'tier-purple', 'tier-blue', 'tier-green'];
-    let dominantColor = null;
-
-    for (let tier of priority) {
-        const onlineNode = Array.from(nodes).find(n => n.classList.contains(tier) && n.classList.contains('online'));
-        if (onlineNode) {
-            const colorVar = getComputedStyle(onlineNode).getPropertyValue(`--${tier.replace('tier-', '')}`);
-            dominantColor = colorVar.trim();
-            break;
-        }
-    }
-
-    if (dominantColor) {
-        document.documentElement.style.setProperty('--active-tint', dominantColor);
-        // Apply to blobs with transition
-        document.querySelectorAll('.blob').forEach((blob, index) => {
-            blob.style.background = dominantColor;
-            // Slight variation for depth
-            if (index === 1) blob.style.filter = 'brightness(0.8)';
-            if (index === 2) blob.style.filter = 'brightness(1.2)';
-        });
-    }
-}
-
-// ---------- NEW FEATURE: ENHANCE ACTIVITY DISPLAY (Spotify bars, icons) ----------
-function enhanceActivityDisplay() {
-    document.querySelectorAll('.node-container.online .username').forEach(nameEl => {
-        // Check if there's already an activity-text span
-        const activitySpan = nameEl.querySelector('.activity-text');
-        if (!activitySpan) return;
-
-        const activityText = activitySpan.textContent;
-        if (activityText.toLowerCase().includes('spotify')) {
-            // Add Spotify bars if not already present
-            if (!nameEl.querySelector('.spotify-bars')) {
-                const bars = document.createElement('span');
-                bars.className = 'spotify-bars';
-                bars.innerHTML = '<span></span><span></span><span></span>';
-                nameEl.appendChild(bars);
-            }
-        }
-
-        // Add app icon next to activity text
-        const appMatch = activityText.match(/USING: (.+)/);
-        if (appMatch) {
-            const appName = appMatch[1].trim();
-            const iconUrl = `https://cdn.simpleicons.org/${appName.toLowerCase().replace(/\s+/g, '')}`;
-            const img = document.createElement('img');
-            img.src = iconUrl;
-            img.className = 'app-icon';
-            img.alt = appName;
-            img.onerror = () => img.style.display = 'none';
-            activitySpan.appendChild(img);
-        }
-    });
-}
-
-// ---------- NEW FEATURE: AUDIO ON FIRST INTERACTION ----------
+// ========== NEW FEATURE: AUDIO ON FIRST INTERACTION ==========
 function initAudioOnFirstInteraction() {
     const enableAudio = () => {
         if (currentAudioEnabled) return;
         currentAudioEnabled = true;
-        // Preload and allow audio
         document.querySelectorAll('audio').forEach(a => a.load());
         document.removeEventListener('click', enableAudio);
         document.removeEventListener('mouseenter', enableAudio, true);
@@ -383,126 +222,117 @@ function initAudioOnFirstInteraction() {
     document.addEventListener('mouseenter', enableAudio, true);
 }
 
-// Play hover sound (if enabled)
 function playHover() {
     if (!currentAudioEnabled) return;
     const sound = document.getElementById('hover-sound');
     if (sound) sound.play().catch(() => {});
 }
 
-// Play click sound (if enabled)
 function playClick() {
     if (!currentAudioEnabled) return;
     const sound = document.getElementById('click-sound');
     if (sound) sound.play().catch(() => {});
 }
 
-// ---------- ORIGINAL syncSystem (modified to integrate new features) ----------
+// ========== NEW FEATURE: SYSTEM LOGS ==========
+function addLog(message) {
+    if (!logContainer) return;
+    const entry = document.createElement('div');
+    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    entry.textContent = `[${timestamp}] ${message}`;
+    logContainer.appendChild(entry);
+    logContainer.scrollTop = logContainer.scrollHeight;
+    while (logContainer.children.length > 50) {
+        logContainer.removeChild(logContainer.firstChild);
+    }
+}
+
+// ========== CORE SYNC FUNCTION (REAL DATA) ==========
 async function syncSystem() {
     try {
-        // Fetch widget data
+        // 1. Fetch Discord widget (online members)
         const widgetResponse = await fetch(`https://discord.com/api/guilds/${SERVER_ID}/widget.json`);
         const widgetData = await widgetResponse.json();
         onlineMembers = widgetData.members || [];
-        
-        // Fetch staff database
+
+        // 2. Fetch staff database (from GitHub Action)
         const dbResponse = await fetch('./staff_data.json');
         const dbData = await dbResponse.json();
-        staffDatabase = dbData.members || []; 
+        staffDatabase = dbData;  // now contains { members, roles, lastUpdated }
 
-        // Update sync timestamp in UI (if element exists)
-        if (dbData.lastUpdated) {
-            const date = new Date(dbData.lastUpdated);
-            const timeEl = document.getElementById('sync-time');
-            if(timeEl) timeEl.innerText = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        }
-
-        // Update online count
-        document.getElementById('active-count').innerText = widgetData.presence_count || "00";
+        // Update status
+        document.getElementById('active-count').innerText = widgetData.presence_count || "0";
         document.getElementById('signal-status').innerText = "LIVE_STREAM_ACTIVE";
 
-        // Update stats grid with mock data (replace with real API later)
-        document.getElementById('boost-count').innerText = '14';
-        document.getElementById('boost-progress').style.width = '70%';
-        document.getElementById('member-count').innerText = '1,247';
-        document.getElementById('member-trend').innerText = '+2.3%';
-        document.getElementById('top-poster').innerText = '@midnightcane';
-        document.getElementById('top-poster-count').innerText = '(142 msgs)';
+        // ---------- STATS GRID (real data) ----------
+        const totalStaff = staffDatabase.members.length;
+        const staffOnline = onlineMembers.filter(m => staffDatabase.members.some(s => s.id === m.id)).length;
+        const lastSync = staffDatabase.lastUpdated ? new Date(staffDatabase.lastUpdated).toLocaleTimeString() : '--:--:--';
 
-        // Process each node
+        document.getElementById('staff-online').innerText = staffOnline;
+        document.getElementById('total-staff').innerText = totalStaff;
+        document.getElementById('server-online').innerText = widgetData.presence_count || "0";
+        document.getElementById('last-sync').innerText = lastSync;
+
+        // Update progress bar (online staff / total staff)
+        const onlinePercent = totalStaff ? (staffOnline / totalStaff) * 100 : 0;
+        document.getElementById('staff-progress').style.width = `${onlinePercent}%`;
+
+        // ---------- PROCESS EACH NODE ----------
         const nodes = document.querySelectorAll('.node-container');
-        const staffIds = [];
+        const staffIds = staffDatabase.members.map(m => m.id);
 
         nodes.forEach(node => {
             const uid = node.getAttribute('data-id');
-            staffIds.push(uid);
             const pfpEl = node.querySelector('.node-pfp');
             const nameEl = node.querySelector('.username');
 
             const live = onlineMembers.find(m => m.id === uid);
-            const arch = staffDatabase.find(m => m.id === uid);
-
-            // Store data attributes for modal
-            node.dataset.username = live?.username || arch?.name || 'OFFLINE';
-            node.dataset.avatar = live?.avatar_url || arch?.avatar || SILHOUETTE;
+            const arch = staffDatabase.members.find(m => m.id === uid);
 
             if (live) {
                 node.classList.add('online');
                 if (pfpEl) pfpEl.style.backgroundImage = `url('${live.avatar_url}')`;
-                const activity = live.game;
                 if (nameEl) {
-                    let activityHtml = live.username.toUpperCase();
-                    if (activity && activity.name) {
-                        activityHtml += `<br><span class="activity-text">USING: ${activity.name.toUpperCase()}</span>`;
+                    let displayName = live.username.toUpperCase();
+                    if (live.game && live.game.name) {
+                        const gameName = live.game.name;
+                        displayName += `<br><span class="activity-text">USING: ${gameName.toUpperCase()}</span>`;
+                        // Add Spotify bars if applicable
+                        if (gameName.toLowerCase().includes('spotify')) {
+                            displayName += `<span class="spotify-bars"><span></span><span></span><span></span></span>`;
+                        }
+                        // Add app icon (simple attempt)
+                        const iconUrl = `https://cdn.simpleicons.org/${gameName.toLowerCase().replace(/\s+/g, '')}`;
+                        displayName += `<img src="${iconUrl}" class="app-icon" alt="${gameName}" onerror="this.style.display='none'">`;
                     }
-                    nameEl.innerHTML = activityHtml;
-                }
-                // Add click listener for modal (if not already added)
-                if (!node.dataset.modalAttached) {
-                    node.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        playClick();
-                        showUserModal(node, live, true, activity);
-                    });
-                    node.dataset.modalAttached = 'true';
+                    nameEl.innerHTML = displayName;
                 }
             } else if (arch) {
                 node.classList.remove('online');
                 if (pfpEl) pfpEl.style.backgroundImage = `url('${arch.avatar}')`;
                 if (nameEl) nameEl.innerHTML = arch.name.toUpperCase();
-                // Add click listener for offline modal
-                if (!node.dataset.modalAttached) {
-                    node.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        playClick();
-                        showUserModal(node, null, false, null);
-                    });
-                    node.dataset.modalAttached = 'true';
-                }
             } else {
                 node.classList.remove('online');
                 if (pfpEl) pfpEl.style.backgroundImage = `url('${SILHOUETTE}')`;
                 if (nameEl) nameEl.innerHTML = "OFFLINE";
-                if (!node.dataset.modalAttached) {
-                    node.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        playClick();
-                        showUserModal(node, null, false, null);
-                    });
-                    node.dataset.modalAttached = 'true';
-                }
             }
 
-            // Add hover sound (only if audio enabled)
+            // Attach modal click (once)
+            if (!node.dataset.modalAttached) {
+                node.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    playClick();
+                    showUserModal(node, live, arch);
+                });
+                node.dataset.modalAttached = 'true';
+            }
             node.addEventListener('mouseenter', playHover);
         });
 
-        // Enhance activity display with Spotify bars and icons
-        enhanceActivityDisplay();
-
-        // Update orbit nodes (same as original, but make them clickable)
+        // ---------- ORBIT UPDATE ----------
         const orbitField = document.getElementById('member-orbit-field');
-        if(orbitField) {
+        if (orbitField) {
             orbitField.innerHTML = '';
             const civilians = onlineMembers.filter(m => !staffIds.includes(m.id));
             civilians.slice(0, 12).forEach((m, i) => {
@@ -514,26 +344,117 @@ async function syncSystem() {
                 div.style.left = `${x}px`;
                 div.style.top = `${y}px`;
                 div.style.backgroundImage = `url('${m.avatar_url}')`;
-                div.dataset.id = m.id;
                 div.addEventListener('click', () => {
                     playClick();
-                    // Find corresponding node or just show quick info
-                    alert(`${m.username} – click node for details`);
+                    alert(`${m.username} (non-staff member)`);
                 });
                 orbitField.appendChild(div);
             });
         }
 
-        // Update adaptive theme based on highest online rank
+        // Adaptive theme
         updateAdaptiveTheme();
-
-        // Add system log
-        addLog(`SYSTEM_SYNC: ${onlineMembers.length} members detected, ${widgetData.presence_count} online`);
+        addLog(`SYNC: ${onlineMembers.length} online, ${staffOnline} staff active`);
 
     } catch (err) {
-        const statusEl = document.getElementById('signal-status');
-        if(statusEl) statusEl.innerText = "SIGNAL_INTERRUPTED";
+        document.getElementById('signal-status').innerText = "SIGNAL_INTERRUPTED";
         addLog(`ERROR: ${err.message}`);
         console.error(err);
     }
 }
+
+// ========== USER MODAL WITH REAL ROLES ==========
+function showUserModal(node, live, arch) {
+    const modal = userDetailModal;
+    if (!modal) return;
+
+    const uid = node.dataset.id;
+    const staffMember = staffDatabase.members.find(m => m.id === uid);
+    const isOnline = !!live;
+    const user = live || arch || {};
+
+    // Avatar
+    const avatar = live?.avatar_url || arch?.avatar || SILHOUETTE;
+    document.getElementById('modal-avatar').style.backgroundImage = `url('${avatar}')`;
+
+    // Username (use nickname if available)
+    const displayName = staffMember?.nickname || user.name || 'UNKNOWN';
+    document.getElementById('modal-username').textContent = displayName.toUpperCase();
+
+    // Role badge based on node class
+    let roleBadge = 'MEMBER';
+    let badgeClass = '';
+    if (node.classList.contains('tier-gold')) { roleBadge = 'SUPREME OWNER'; badgeClass = 'owner'; }
+    else if (node.classList.contains('tier-crimson')) { roleBadge = 'CO-OWNER'; badgeClass = 'coowner'; }
+    else if (node.classList.contains('tier-purple')) { roleBadge = 'SUPER ADMIN'; badgeClass = 'admin'; }
+    else if (node.classList.contains('tier-blue')) { roleBadge = 'ADMIN'; badgeClass = 'admin'; }
+    else if (node.classList.contains('tier-green')) { roleBadge = 'MODERATOR'; badgeClass = 'mod'; }
+
+    const roleSpan = document.getElementById('modal-role');
+    roleSpan.textContent = roleBadge;
+    roleSpan.className = `user-role ${badgeClass}`;
+
+    // Activity section
+    const activityDiv = document.getElementById('modal-activity');
+    if (isOnline && live.game) {
+        const game = live.game.name;
+        if (game.toLowerCase().includes('spotify')) {
+            activityDiv.innerHTML = `
+                <div class="user-activity spotify">
+                    <img src="https://cdn.simpleicons.org/spotify/1DB954" alt="Spotify"> 
+                    <strong>LISTENING TO SPOTIFY</strong><br>
+                    <span style="font-size:13px;">♫ ${game}</span>
+                </div>
+            `;
+        } else {
+            activityDiv.innerHTML = `
+                <div class="user-activity">
+                    <strong>ACTIVITY:</strong> ${game}
+                </div>
+            `;
+        }
+    } else {
+        activityDiv.innerHTML = '<div class="user-activity">User is offline</div>';
+    }
+
+    // Discord roles (real from staffDatabase.roles)
+    const rolesDiv = document.getElementById('modal-discord-roles');
+    if (staffMember && staffMember.roles && staffMember.roles.length > 0) {
+        const roleNames = staffMember.roles
+            .map(roleId => {
+                const role = staffDatabase.roles[roleId];
+                return role ? role.name : roleId;
+            })
+            .join(' • ');
+        rolesDiv.innerHTML = `<strong>DISCORD ROLES:</strong> ${roleNames}`;
+    } else {
+        rolesDiv.innerHTML = '<strong>DISCORD ROLES:</strong> No roles';
+    }
+
+    modal.style.display = 'flex';
+}
+
+// ========== ADAPTIVE THEME (based on highest online) ==========
+function updateAdaptiveTheme() {
+    const nodes = document.querySelectorAll('.node-container.online');
+    const priority = ['tier-gold', 'tier-crimson', 'tier-purple', 'tier-blue', 'tier-green'];
+    let dominantColor = null;
+
+    for (let tier of priority) {
+        const onlineNode = Array.from(nodes).find(n => n.classList.contains(tier));
+        if (onlineNode) {
+            const colorVar = getComputedStyle(onlineNode).getPropertyValue(`--${tier.replace('tier-', '')}`).trim();
+            dominantColor = colorVar || '#ffffff';
+            break;
+        }
+    }
+
+    if (dominantColor) {
+        document.documentElement.style.setProperty('--active-tint', dominantColor);
+        document.querySelectorAll('.blob').forEach((blob, i) => {
+            blob.style.background = dominantColor;
+            if (i === 1) blob.style.filter = 'brightness(0.8)';
+            if (i === 2) blob.style.filter = 'brightness(1.2)';
+        });
+    }
+                    }
