@@ -6,7 +6,7 @@
     <title>Liquid Glass | Command Center</title>
     <!-- PWA manifest -->
     <link rel="manifest" href="manifest.json">
-    <!-- Main stylesheet (contains both original and new CSS) -->
+    <!-- Main stylesheet -->
     <link rel="stylesheet" href="style.css">
     <!-- Interact.js for draggable windows -->
     <script src="https://cdn.jsdelivr.net/npm/interactjs@1.10.11/dist/interact.min.js"></script>
@@ -46,24 +46,26 @@
             <button class="filter-btn" data-filter="owners">OWNERS</button>
         </div>
 
-        <!-- Stats Grid (boost, members, top poster) -->
+        <!-- Stats Grid (real data) -->
         <div class="stats-grid">
             <div class="stat-card glass">
-                <span class="stat-label">BOOSTS</span>
-                <span class="stat-value" id="boost-count">14</span>
+                <span class="stat-label">STAFF ONLINE</span>
+                <span class="stat-value" id="staff-online">0</span>
                 <div class="progress-bar">
-                    <div class="progress-bar-fill" id="boost-progress" style="width:70%"></div>
+                    <div class="progress-bar-fill" id="staff-progress" style="width:0%"></div>
                 </div>
             </div>
             <div class="stat-card glass">
-                <span class="stat-label">MEMBERS</span>
-                <span class="stat-value" id="member-count">1,234</span>
-                <span class="stat-trend" id="member-trend">+2.5%</span>
+                <span class="stat-label">TOTAL STAFF</span>
+                <span class="stat-value" id="total-staff">0</span>
             </div>
             <div class="stat-card glass">
-                <span class="stat-label">TOP POSTER</span>
-                <span class="stat-value" id="top-poster">@user</span>
-                <span class="stat-trend" id="top-poster-count">(142 msgs)</span>
+                <span class="stat-label">SERVER ONLINE</span>
+                <span class="stat-value" id="server-online">0</span>
+            </div>
+            <div class="stat-card glass">
+                <span class="stat-label">LAST SYNC</span>
+                <span class="stat-value" id="last-sync">--:--:--</span>
             </div>
         </div>
 
@@ -152,11 +154,11 @@
         </main>
     </div>
 
-    <!-- Audio feedback elements (subtle) -->
+    <!-- Audio feedback elements -->
     <audio id="hover-sound" preload="auto" src="sounds/hover.mp3"></audio>
     <audio id="click-sound" preload="auto" src="sounds/click.mp3"></audio>
 
-    <!-- Modal for stream preview / user details -->
+    <!-- Modal for stream preview -->
     <div id="stream-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="document.getElementById('stream-modal').style.display='none'">&times;</span>
@@ -164,6 +166,7 @@
         </div>
     </div>
 
+    <!-- Modal for user details -->
     <div id="user-detail-modal" class="modal user-detail-modal">
         <div class="modal-content">
             <span class="close-modal" onclick="document.getElementById('user-detail-modal').style.display='none'">&times;</span>
