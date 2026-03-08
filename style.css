@@ -1,72 +1,100 @@
-/* =========================================
-   ADDITIONAL FEATURES – SYSTEM INTERFACE UPGRADE
-   ========================================= */
+/* ============================================
+   LIQUID GLASS COMMAND CENTER – FINAL CSS
+   ============================================ */
 
-/* -----------------------------------------
-   1. SCANLINE OVERLAY (CRT effect)
------------------------------------------ */
-body::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: repeating-linear-gradient(
-        0deg,
-        rgba(0, 0, 0, 0.03) 0px,
-        rgba(0, 255, 0, 0.02) 1px,
-        transparent 2px,
-        transparent 4px
-    );
-    pointer-events: none;
-    z-index: 999;
-    animation: scan 8s linear infinite;
-}
-
-@keyframes scan {
-    from { transform: translateY(0); }
-    to { transform: translateY(100vh); }
-}
-
-/* -----------------------------------------
-   2. ADAPTIVE THEME COLORS (dynamic tint)
-   The actual color change is done via JS,
-   but we define the variable and blob base.
------------------------------------------ */
 :root {
-    --active-tint: #ffffff; /* fallback */
+    --glass-bg: rgba(255, 255, 255, 0.04);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-glare: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    --glass-blur: blur(15px);
+    --aura-blur: 35px;
+    
+    /* Role Colors */
+    --gold: #ffcf40;
+    --crimson: #dc143c;
+    --royal-purple: #7851a9;
+    --electric-blue: #0062ff;
+    --emerald-green: #50c878;
+    
+    --text-main: #e0e0e0;
+    --active-tint: #ffffff; /* for adaptive theme */
 }
 
-.blob-1,
-.blob-2,
-.blob-3 {
+* { box-sizing: border-box; }
+
+body {
+    background-color: #030305;
+    color: var(--text-main);
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* --- LIQUID BACKGROUND BLOBS --- */
+.glass-background {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    filter: blur(80px);
+    pointer-events: none;
+}
+
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.35;
+    animation: move 20s infinite alternate;
     transition: background 1s ease;
 }
 
-/* -----------------------------------------
-   3. GLITCH HOVER EFFECT (RGB split)
------------------------------------------ */
-.node-container {
-    transition: transform 0.4s, filter 0.2s;
+.blob-1 { width: 400px; height: 400px; background: var(--gold); top: -10%; left: -10%; }
+.blob-2 { width: 500px; height: 500px; background: var(--royal-purple); bottom: -10%; right: -10%; animation-delay: -5s; }
+.blob-3 { width: 300px; height: 300px; background: var(--crimson); top: 40%; left: 60%; animation-delay: -10s; }
+
+@keyframes move {
+    from { transform: translate(0, 0) scale(1); }
+    to { transform: translate(100px, 100px) scale(1.1); }
 }
 
-.node-container:hover {
-    animation: glitch 0.3s infinite;
+/* --- INTERFACE FRAME --- */
+.interface-frame {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
 }
 
-@keyframes glitch {
-    0% { transform: translate(0); filter: hue-rotate(0deg); }
-    20% { transform: translate(-2px, 1px); filter: hue-rotate(90deg); }
-    40% { transform: translate(2px, -1px); filter: hue-rotate(180deg); }
-    60% { transform: translate(-1px, 2px); filter: hue-rotate(270deg); }
-    80% { transform: translate(1px, -2px); filter: hue-rotate(360deg); }
-    100% { transform: translate(0); }
+.glass {
+    background: linear-gradient(135deg, var(--glass-bg), rgba(255, 255, 255, 0.01));
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), var(--glass-glare);
 }
 
-/* -----------------------------------------
-   4. FILTER BAR (role/status toggles)
------------------------------------------ */
+/* --- HEADER --- */
+.top-header {
+    padding: 20px 40px;
+    margin-bottom: 50px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.glass-title {
+    margin: 0;
+    font-size: 1.5rem;
+    letter-spacing: 5px;
+    font-weight: 300;
+    text-shadow: 0 0 10px rgba(255,255,255,0.2);
+}
+
+/* --- FILTER BAR --- */
 .filter-bar {
     padding: 10px;
     margin-bottom: 20px;
@@ -105,9 +133,7 @@ body::after {
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
-/* -----------------------------------------
-   5. STATS GRID (boost, members, top poster)
------------------------------------------ */
+/* --- STATS GRID --- */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -117,7 +143,7 @@ body::after {
 
 .stat-card {
     padding: 20px 15px;
-    text-align: center;
+    text-align: left;
     background: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(10px);
     border: 1px solid var(--glass-border);
@@ -139,12 +165,8 @@ body::after {
     font-weight: 300;
     color: white;
     text-shadow: 0 0 15px currentColor;
-}
-
-.stat-trend {
-    font-size: 12px;
-    margin-left: 5px;
-    color: #50c878;
+    display: block;
+    line-height: 1.2;
 }
 
 .progress-bar {
@@ -159,12 +181,217 @@ body::after {
     height: 100%;
     background: var(--emerald-green);
     border-radius: 2px;
-    width: 0%; /* will be set by JS */
+    width: 0%;
 }
 
-/* -----------------------------------------
-   6. SYSTEM LOGS TERMINAL
------------------------------------------ */
+/* --- NODE SYSTEM (THE BOXES) --- */
+.hierarchy-tree {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+}
+
+.dual-rank {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.node-container {
+    position: relative;
+    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.2s;
+    cursor: pointer;
+    width: 280px;
+    z-index: 10;
+}
+
+.node-container:hover {
+    transform: translateY(-5px) scale(1.03);
+    animation: glitch 0.3s infinite;
+}
+
+@keyframes glitch {
+    0% { transform: translate(0); filter: hue-rotate(0deg); }
+    20% { transform: translate(-2px, 1px); filter: hue-rotate(90deg); }
+    40% { transform: translate(2px, -1px); filter: hue-rotate(180deg); }
+    60% { transform: translate(-1px, 2px); filter: hue-rotate(270deg); }
+    80% { transform: translate(1px, -2px); filter: hue-rotate(360deg); }
+    100% { transform: translate(0); }
+}
+
+/* --- THE LIQUID AURA (GLOW OUTSIDE) --- */
+.node-container::before {
+    content: '';
+    position: absolute;
+    inset: -10px;
+    z-index: -1;
+    border-radius: 25px;
+    background: inherit;
+    filter: blur(var(--aura-blur));
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+}
+
+.node-container.online::before { opacity: 0.55; }
+.node-container.online:hover::before { opacity: 0.8; }
+
+/* --- TIER COLORS & AURAS --- */
+.tier-gold { border-color: rgba(255, 207, 64, 0.4); }
+.tier-gold .role-tag { color: var(--gold); }
+.tier-gold.online::before { background: var(--gold); }
+
+.tier-crimson { border-color: rgba(220, 20, 60, 0.4); }
+.tier-crimson .role-tag { color: var(--crimson); }
+.tier-crimson.online::before { background: var(--crimson); }
+
+.tier-purple { border-color: rgba(120, 81, 169, 0.4); width: 220px; }
+.tier-purple .role-tag { color: var(--royal-purple); }
+.tier-purple.online::before { background: var(--royal-purple); }
+
+.tier-blue { border-color: rgba(0, 98, 255, 0.4); width: 220px; }
+.tier-blue .role-tag { color: var(--electric-blue); }
+.tier-blue.online::before { background: var(--electric-blue); }
+
+.tier-green { border-color: rgba(80, 200, 120, 0.3); width: 80px; height: 80px; padding: 0; justify-content: center; }
+.tier-green .node-pfp { margin: 0; border-radius: 50%; }
+.tier-green.online::before { background: var(--emerald-green); }
+
+/* --- PARTICLE CANVAS --- */
+.particle-canvas {
+    position: absolute;
+    top: -60px; left: -60px; 
+    width: calc(100% + 120px) !important; 
+    height: calc(100% + 120px) !important;
+    pointer-events: none;
+    z-index: -2;
+}
+
+/* --- NODE INTERNALS --- */
+.node-pfp {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background-size: cover;
+    z-index: 1;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
+
+.node-info { z-index: 1; display: flex; flex-direction: column; }
+
+.role-tag {
+    display: block;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.username { 
+    font-size: 15px; 
+    font-weight: 600; 
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.activity-text {
+    font-size: 9px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 1px;
+    margin-top: 3px;
+}
+
+/* --- MOD GRID --- */
+.mod-section-label {
+    margin-top: 20px;
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,0.5);
+}
+
+.mod-deployment-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    width: 100%;
+    max-width: 400px;
+    justify-items: center;
+}
+
+/* --- ORBIT COMPLEX (RADAR) --- */
+.orbit-complex {
+    margin-top: 60px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#orbit-viewport { position: relative; width: 300px; height: 300px; }
+
+.radar-sweep {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: conic-gradient(from 0deg, transparent 0%, rgba(255, 255, 255, 0.05) 15%, transparent 20%);
+    border-radius: 50%;
+    animation: rotate 4s linear infinite;
+}
+
+.ring {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+}
+
+#ring-outer { width: 280px; height: 280px; }
+#ring-inner { width: 200px; height: 200px; }
+
+@keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.pulse-dot {
+    width: 8px; height: 8px;
+    background: #50c878;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 10px;
+    box-shadow: 0 0 10px #50c878;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.5; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* --- ORBIT NODES (CLICKABLE) --- */
+.orbit-node {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-size: cover;
+    position: absolute;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 2px solid rgba(255,255,255,0.2);
+}
+
+.orbit-node:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 15px currentColor;
+}
+
+/* --- SYSTEM TERMINAL --- */
 .system-terminal {
     margin-top: 40px;
     padding: 15px;
@@ -209,23 +436,7 @@ body::after {
     border-bottom: none;
 }
 
-/* -----------------------------------------
-   7. DRAGGABLE WINDOWS (for interact.js)
------------------------------------------ */
-.draggable {
-    cursor: grab;
-    user-select: none;
-    transition: box-shadow 0.2s;
-}
-
-.draggable:active {
-    cursor: grabbing;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
-}
-
-/* -----------------------------------------
-   8. SYSTEM TRAY (clock & battery)
------------------------------------------ */
+/* --- SYSTEM TRAY (CLOCK & BATTERY) --- */
 .system-tray {
     position: fixed;
     top: 20px;
@@ -251,9 +462,86 @@ body::after {
     color: #ffd966;
 }
 
-/* -----------------------------------------
-   9. MODAL WINDOW (for stream / user details)
------------------------------------------ */
+/* --- DRAGGABLE WINDOWS (interact.js) --- */
+.draggable {
+    cursor: grab;
+    user-select: none;
+    transition: box-shadow 0.2s;
+}
+
+.draggable:active {
+    cursor: grabbing;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* --- SCANLINE OVERLAY (CRT) --- */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.03) 0px,
+        rgba(0, 255, 0, 0.02) 1px,
+        transparent 2px,
+        transparent 4px
+    );
+    pointer-events: none;
+    z-index: 999;
+    animation: scan 8s linear infinite;
+}
+
+@keyframes scan {
+    from { transform: translateY(0); }
+    to { transform: translateY(100vh); }
+}
+
+/* --- SPOTIFY BARS --- */
+.spotify-bars {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+.spotify-bars span {
+    width: 3px;
+    height: 10px;
+    background: #1DB954;
+    border-radius: 1px;
+    animation: bars 0.8s infinite ease-in-out alternate;
+}
+
+.spotify-bars span:nth-child(2) {
+    animation-delay: 0.2s;
+    height: 14px;
+}
+
+.spotify-bars span:nth-child(3) {
+    animation-delay: 0.4s;
+    height: 8px;
+}
+
+@keyframes bars {
+    from { transform: scaleY(0.5); }
+    to { transform: scaleY(1.2); }
+}
+
+/* --- APP ICONS --- */
+.app-icon {
+    width: 14px;
+    height: 14px;
+    margin-left: 5px;
+    vertical-align: middle;
+    filter: brightness(0.9);
+    border-radius: 2px;
+}
+
+/* --- MODALS --- */
 .modal {
     position: fixed;
     top: 0;
@@ -305,7 +593,7 @@ body::after {
     background: black;
 }
 
-/* User detail modal (for when clicking a node) */
+/* User detail modal */
 .user-detail-modal .modal-content {
     max-width: 400px;
 }
@@ -333,9 +621,9 @@ body::after {
 .user-role {
     display: inline-block;
     padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: bold;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 600;
     text-transform: uppercase;
     margin-top: 8px;
 }
@@ -363,74 +651,47 @@ body::after {
     margin-right: 8px;
 }
 
-/* -----------------------------------------
-   10. SPOTIFY LISTENING BARS
------------------------------------------ */
-.spotify-bars {
-    display: inline-flex;
-    align-items: center;
-    gap: 2px;
-    margin-left: 6px;
-    vertical-align: middle;
+.user-discord-roles {
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+    font-size: 12px;
 }
 
-.spotify-bars span {
-    width: 3px;
-    height: 10px;
-    background: #1DB954; /* Spotify green */
-    border-radius: 1px;
-    animation: bars 0.8s infinite ease-in-out alternate;
-}
-
-.spotify-bars span:nth-child(2) {
-    animation-delay: 0.2s;
-    height: 14px;
-}
-
-.spotify-bars span:nth-child(3) {
-    animation-delay: 0.4s;
-    height: 8px;
-}
-
-@keyframes bars {
-    from { transform: scaleY(0.5); }
-    to { transform: scaleY(1.2); }
-}
-
-/* -----------------------------------------
-   11. APP ICONS (for rich presence)
------------------------------------------ */
-.app-icon {
-    width: 14px;
-    height: 14px;
-    margin-left: 5px;
-    vertical-align: middle;
-    filter: brightness(0.9);
-    border-radius: 2px;
-}
-
-/* -----------------------------------------
-   12. ORBIT NODE CLICKABLE
------------------------------------------ */
-.orbit-node {
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.orbit-node:hover {
-    transform: scale(1.2);
-    box-shadow: 0 0 15px currentColor;
-}
-
-/* -----------------------------------------
-   13. RESPONSIVE TWEAKS FOR NEW ELEMENTS
------------------------------------------ */
+/* =========================================
+   MOBILE RESPONSIVENESS
+   ========================================= */
 @media (max-width: 768px) {
-    .system-tray {
-        top: 10px;
-        right: 10px;
-        font-size: 11px;
-        padding: 5px 10px;
+    .interface-frame {
+        padding: 10px;
+        margin: 20px auto;
+    }
+    
+    .top-header { padding: 20px; }
+    
+    .header-content {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .glass-title { font-size: 5vw; }
+    
+    .mod-deployment-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        max-width: 300px;
+    }
+    
+    .tier-green {
+        width: 65px; 
+        height: 65px;
+    }
+    
+    .node-container {
+        width: 100%;
+        max-width: 280px;
     }
 
     .stats-grid {
@@ -445,6 +706,13 @@ body::after {
     .filter-btn {
         padding: 6px 12px;
         font-size: 10px;
+    }
+
+    .system-tray {
+        top: 10px;
+        right: 10px;
+        font-size: 11px;
+        padding: 5px 10px;
     }
 
     .modal-content {
@@ -465,4 +733,4 @@ body::after {
     .stats-grid {
         grid-template-columns: 1fr;
     }
-    }
+}
