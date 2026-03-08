@@ -3,77 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Discord Command Interface</title>
+    <title>Liquid Glass | Command Center</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="cyber-overlay"></div>
+    <div class="glass-background">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
     <div class="interface-frame">
-        <header class="top-header">
-            <div class="glitch-title" data-text="SYSTEM_HIERARCHY_v4.0">SYSTEM_HIERARCHY_v4.0</div>
-            <div class="status-box">
-                <span class="label">SIGNAL:</span>
-                <span id="signal-status" class="value pulse-green">ESTABLISHED</span>
+        <header class="top-header glass">
+            <div class="header-content">
+                <h1 class="glass-title">CORE_HIERARCHY</h1>
+                <div class="status-indicator">
+                    <span class="pulse-dot"></span>
+                    <span id="signal-status">SYNCING_DATA...</span>
+                </div>
             </div>
         </header>
 
         <main id="command-center">
             <section class="hierarchy-tree">
                 <div class="rank-tier">
-                    <div class="node-container" data-id="683212245311946795" data-role="OWNER">
-                        <div class="scanner-line"></div>
+                    <div class="node-container glass tier-gold" data-id="683212245311946795">
+                        <canvas class="particle-canvas"></canvas>
                         <div class="node-pfp"></div>
                         <div class="node-info">
-                            <span class="role-tag">LVL_01 // OWNER</span>
-                            <span class="username">OFFLINE</span>
+                            <span class="role-tag">SUPREME_OWNER</span>
+                            <span class="username">FETCHING...</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="rank-tier connector">
-                    <div class="node-container" data-id="959431187955351623" data-role="CO-OWNER">
-                        <div class="scanner-line"></div>
+                <div class="rank-tier">
+                    <div class="node-container glass tier-crimson" data-id="959431187955351623">
+                        <canvas class="particle-canvas"></canvas>
                         <div class="node-pfp"></div>
                         <div class="node-info">
-                            <span class="role-tag">LVL_02 // CO-OWNER</span>
-                            <span class="username">OFFLINE</span>
+                            <span class="role-tag">CO_OWNER</span>
+                            <span class="username">FETCHING...</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="rank-tier connector">
-                    <div class="node-container admin" data-id="183900012705480705" data-role="S-ADMIN">
+                <div class="rank-tier dual-rank">
+                    <div class="node-container glass tier-purple" data-id="183900012705480705">
                         <div class="node-pfp"></div>
-                        <div class="node-info"><span class="role-tag">S_ADMIN</span><span class="username">OFFLINE</span></div>
+                        <div class="node-info">
+                            <span class="role-tag">SUPER_ADMIN</span>
+                            <span class="username">FETCHING...</span>
+                        </div>
                     </div>
-                    <div class="node-container admin" data-id="1398034278662537337" data-role="ADMIN">
+                    <div class="node-container glass tier-blue" data-id="1398034278662537337">
                         <div class="node-pfp"></div>
-                        <div class="node-info"><span class="role-tag">ADMIN</span><span class="username">OFFLINE</span></div>
+                        <div class="node-info">
+                            <span class="role-tag">ADMIN_UNIT</span>
+                            <span class="username">FETCHING...</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="rank-tier mod-grid-header">TACTICAL_MOD_UNITS</div>
+                <div class="mod-section-label">TACTICAL_MOD_UNITS</div>
                 <div class="mod-deployment-grid">
-                    <div class="node-container mod" data-id="1388087779174383719"></div>
-                    <div class="node-container mod" data-id="287809220210851851"></div>
-                    <div class="node-container mod" data-id="368838581009252362"></div>
-                    <div class="node-container mod" data-id="916731589893959710"></div>
-                    <div class="node-container mod" data-id="226914498089451520"></div>
-                    <div class="node-container mod" data-id="531178595130015755"></div>
-                    <div class="node-container mod" data-id="652983918013841429"></div>
-                    <div class="node-container mod" data-id="556714289453465601"></div>
+                    <div class="node-container glass tier-green mod" data-id="652983918013841429"></div>
+                    <div class="node-container glass tier-green mod" data-id="531178595130015755"></div>
+                    <div class="node-container glass tier-green mod" data-id="1388087779174383719"></div>
+                    <div class="node-container glass tier-green mod" data-id="287809220210851851"></div>
+                    <div class="node-container glass tier-green mod" data-id="916731589893959710"></div>
+                    <div class="node-container glass tier-green mod" data-id="226914498089451520"></div>
                 </div>
             </section>
 
-            <section class="orbit-complex">
-                <div class="ring-label">ACTIVE_SIGNAL_ORBIT</div>
+            <section class="orbit-complex glass">
                 <div id="orbit-viewport">
+                    <div class="radar-sweep"></div>
                     <div id="ring-outer" class="ring"></div>
                     <div id="ring-inner" class="ring"></div>
                     <div id="member-orbit-field"></div>
                 </div>
                 <div class="bottom-stats">
-                    <span id="active-count">00</span> // CONNECTED_MEMBERS
+                    <div class="stat-item">
+                        <span class="stat-label">ONLINE_SIGNALS:</span>
+                        <span id="active-count" class="stat-value">00</span>
+                    </div>
                 </div>
             </section>
         </main>
