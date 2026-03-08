@@ -1,20 +1,26 @@
 const SERVER_ID = '1433645535583277129';
 const SILHOUETTE = 'https://archive.org/download/discord_default_avatars/gray.png';
 
-// --- PARTICLE ENGINE CONFIG ---
+// --- PARTICLE ENGINE CONFIG (EXPANDED AURA) ---
 class Particle {
     constructor(canvas, color) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
+        
+        // Spawn particles across the newly expanded canvas area (outside the box)
         this.x = Math.random() * canvas.width;
-        this.y = canvas.height + Math.random() * 20;
-        this.size = Math.random() * 2 + 1;
+        // Start near the bottom of the expanded canvas
+        this.y = canvas.height + (Math.random() * 20) - 20; 
+        
+        this.size = Math.random() * 2.5 + 1;
         this.speedY = Math.random() * 1 + 0.5;
+        this.speedX = (Math.random() - 0.5) * 0.5; // Slight side-to-side drift
         this.opacity = 1;
         this.color = color;
     }
     update() {
         this.y -= this.speedY;
+        this.x += this.speedX;
         this.opacity -= 0.005;
     }
     draw() {
@@ -26,13 +32,17 @@ class Particle {
     }
 }
 
-const activeParticles = [];
 function initParticles() {
     const canvases = document.querySelectorAll('.particle-canvas');
+    
     canvases.forEach(canvas => {
         const parent = canvas.parentElement;
-        canvas.width = parent.offsetWidth;
-        canvas.height = parent.offsetHeight;
+        const localParticles = []; // Scoped to prevent cross-canvas flickering
+        
+        // Expand canvas dimensions to match the CSS expansion (calc(100% + 120px))
+        // This gives the particles room to float around the box
+        canvas.width = parent.offsetWidth + 120;
+        canvas.height = parent.offsetHeight + 120;
         
         // Determine color based on tier
         let pColor = "#ffffff";
@@ -43,12 +53,15 @@ function initParticles() {
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            if (Math.random() > 0.85) activeParticles.push(new Particle(canvas, pColor));
+            // Only spawn particles if the container is currently online
+            if (parent.classList.contains('online') && Math.random() > 0.85) {
+                localParticles.push(new Particle(canvas, pColor));
+            }
             
-            for (let i = activeParticles.length - 1; i >= 0; i--) {
-                activeParticles[i].update();
-                activeParticles[i].draw();
-                if (activeParticles[i].opacity <= 0) activeParticles.splice(i, 1);
+            for (let i = localParticles.length - 1; i >= 0; i--) {
+                localParticles[i].update();
+                localParticles[i].draw();
+                if (localParticles[i].opacity <= 0) localParticles.splice(i, 1);
             }
             requestAnimationFrame(animate);
         }
@@ -71,16 +84,16 @@ function initTilt() {
             const rotateX = (y - centerY) / 10;
             const rotateY = (centerX - x) / 10;
             
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px) scale(1.03)`;
         });
         
         card.addEventListener('mouseleave', () => {
-            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)`;
+            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)`;
         });
     });
 }
 
-// --- CORE DATA SYNC ---
+// --- CORE DATA SYNC & ACTIVITY FETCH ---
 async function syncSystem() {
     console.log(">> [LIQUID_SYNC] Polling Discord API...");
     
@@ -112,16 +125,29 @@ async function syncSystem() {
             const arch = staffDatabase.find(m => m.id === uid);
 
             if (live) {
+                // STATUS: ONLINE
                 node.classList.add('online');
                 if (pfpEl) pfpEl.style.backgroundImage = `url('${live.avatar_url}')`;
-                if (nameEl) nameEl.innerText = live.username.toUpperCase();
+                
+                // Check for current Discord activity/game
+                const activity = live.game;
+                if (nameEl) {
+                    if (activity && activity.name) {
+                        nameEl.innerHTML = `${live.username.toUpperCase()}<br><span class="activity-text">USING: ${activity.name.toUpperCase()}</span>`;
+                    } else {
+                        nameEl.innerHTML = live.username.toUpperCase();
+                    }
+                }
             } else if (arch) {
+                // STATUS: OFFLINE (Fallback to database)
                 node.classList.remove('online');
                 if (pfpEl) pfpEl.style.backgroundImage = `url('${arch.avatar}')`;
-                if (nameEl) nameEl.innerText = arch.name.toUpperCase();
+                if (nameEl) nameEl.innerHTML = arch.name.toUpperCase();
             } else {
+                // STATUS: UNKNOWN
+                node.classList.remove('online');
                 if (pfpEl) pfpEl.style.backgroundImage = `url('${SILHOUETTE}')`;
-                if (nameEl) nameEl.innerText = "OFFLINE";
+                if (nameEl) nameEl.innerHTML = "OFFLINE";
             }
         });
 
@@ -140,11 +166,13 @@ async function syncSystem() {
             div.style.left = `${x}px`;
             div.style.top = `${y}px`;
             div.style.backgroundImage = `url('${m.avatar_url}')`;
+            div.title = m.username; // Add a tooltip for hovering over radar blips
             orbitField.appendChild(div);
         });
 
     } catch (err) {
         document.getElementById('signal-status').innerText = "SIGNAL_INTERRUPTED";
+        console.error("Sync Error:", err);
     }
 }
 
@@ -153,6 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initParticles();
     initTilt();
     syncSystem();
-    // Faster check (25 seconds) as requested
+    // Fetch live data every 25 seconds
     setInterval(syncSystem, 25000); 
 });
