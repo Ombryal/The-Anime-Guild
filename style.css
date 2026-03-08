@@ -1,252 +1,217 @@
 :root {
-    --neon-cyan: #00f3ff;
-    --neon-blue: #0062ff;
-    --neon-red: #ff003c;
-    --bg-black: #050505;
-    --panel-bg: rgba(0, 243, 255, 0.05);
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-blur: blur(15px);
+    
+    /* Role Colors */
+    --gold: #ffcf40;
+    --crimson: #dc143c;
+    --royal-purple: #7851a9;
+    --electric-blue: #0062ff;
+    --emerald-green: #50c878;
+    
+    --text-main: #e0e0e0;
 }
+
+* { box-sizing: border-box; }
 
 body {
-    background-color: var(--bg-black);
-    color: var(--neon-cyan);
-    font-family: 'Courier New', Courier, monospace;
-    overflow-x: hidden;
+    background-color: #030305;
+    color: var(--text-main);
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     margin: 0;
+    overflow-x: hidden;
+    min-height: 100vh;
 }
 
-/* --- SYSTEM OVERLAYS --- */
-.cyber-overlay {
+/* --- LIQUID BACKGROUND BLOBS --- */
+.glass-background {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-    background-size: 100% 2px, 3px 100%;
-    pointer-events: none;
-    z-index: 9999;
+    z-index: -1;
+    overflow: hidden;
+    filter: blur(80px);
 }
 
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.4;
+    animation: move 20s infinite alternate;
+}
+
+.blob-1 { width: 400px; height: 400px; background: var(--gold); top: -10%; left: -10%; }
+.blob-2 { width: 500px; height: 500px; background: var(--royal-purple); bottom: -10%; right: -10%; animation-delay: -5s; }
+.blob-3 { width: 300px; height: 300px; background: var(--crimson); top: 40%; left: 60%; animation-delay: -10s; }
+
+@keyframes move {
+    from { transform: translate(0, 0); }
+    to { transform: translate(100px, 100px); }
+}
+
+/* --- INTERFACE FRAME --- */
 .interface-frame {
+    max-width: 1000px;
+    margin: 40px auto;
     padding: 20px;
-    max-width: 900px;
-    margin: 0 auto;
 }
 
-/* --- HIERARCHY NODES --- */
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* --- HEADER --- */
+.top-header {
+    padding: 20px 40px;
+    margin-bottom: 40px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.glass-title {
+    margin: 0;
+    font-size: 1.5rem;
+    letter-spacing: 5px;
+    font-weight: 300;
+}
+
+/* --- NODE SYSTEM --- */
+.hierarchy-tree {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+}
+
 .node-container {
     position: relative;
-    background: var(--panel-bg);
-    border: 1px solid rgba(0, 243, 255, 0.3);
-    padding: 10px;
-    margin: 10px auto;
-    width: 220px;
+    padding: 15px 25px;
     display: flex;
     align-items: center;
-    clip-path: polygon(0 0, 90% 0, 100% 20%, 100% 100%, 10% 100%, 0 80%);
-    transition: all 0.4s ease;
+    gap: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    width: 280px;
+    overflow: hidden;
 }
 
-.node-container.online {
-    border-color: var(--neon-cyan);
-    box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
-    opacity: 1;
+.node-container:hover {
+    transform: translateY(-5px) scale(1.02);
 }
 
-.node-container:not(.online) {
-    opacity: 0.5;
-    filter: saturate(0.2);
+/* Particle Canvas Placement */
+.particle-canvas {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
 }
 
 .node-pfp {
-    width: 45px;
-    height: 45px;
-    background: #111;
-    border: 1px solid var(--neon-cyan);
-    margin-right: 12px;
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
     background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    z-index: 1;
+    border: 1px solid var(--glass-border);
 }
 
-.username {
-    font-size: 12px;
+.node-info { z-index: 1; }
+
+.role-tag {
+    display: block;
+    font-size: 10px;
     font-weight: bold;
-    color: #fff;
-    text-shadow: 0 0 5px var(--neon-cyan);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
 }
 
-/* --- ANIMATIONS --- */
-.scanner-line {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 2px;
-    background: var(--neon-cyan);
-    box-shadow: 0 0 10px var(--neon-cyan);
-    animation: scan 3s linear infinite;
+.username { font-size: 16px; font-weight: 600; }
+
+/* --- ROLE TIER COLORS & GLOWS --- */
+.tier-gold { border-color: var(--gold); }
+.tier-gold .role-tag { color: var(--gold); }
+.tier-gold.online { box-shadow: 0 0 20px rgba(255, 207, 64, 0.3); }
+
+.tier-crimson { border-color: var(--crimson); }
+.tier-crimson .role-tag { color: var(--crimson); }
+.tier-crimson.online { box-shadow: 0 0 20px rgba(220, 20, 60, 0.3); }
+
+.tier-purple { border-color: var(--royal-purple); width: 220px; }
+.tier-purple .role-tag { color: var(--royal-purple); }
+
+.tier-blue { border-color: var(--electric-blue); width: 220px; }
+.tier-blue .role-tag { color: var(--electric-blue); }
+
+.tier-green { border-color: var(--emerald-green); width: 80px; height: 80px; padding: 0; justify-content: center; }
+.tier-green .node-pfp { margin: 0; border-radius: 50%; }
+
+/* --- MOD GRID --- */
+.mod-deployment-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 15px;
+    width: 100%;
+    max-width: 600px;
 }
 
-@keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
-
-/* --- ORBIT COMPLEX (THE FIX) --- */
+/* --- RADAR COMPLEX --- */
 .orbit-complex {
-    margin-top: 80px;
-    text-align: center;
-    position: relative;
-    padding-bottom: 40px;
+    margin-top: 60px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #orbit-viewport {
     position: relative;
-    width: 300px;
-    height: 300px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 300px; height: 300px;
+}
+
+.radar-sweep {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: conic-gradient(from 0deg, transparent 0%, rgba(255, 255, 255, 0.1) 15%, transparent 20%);
+    border-radius: 50%;
+    animation: rotate 4s linear infinite;
 }
 
 .ring {
     position: absolute;
-    border: 1px dashed rgba(0, 243, 255, 0.2);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 50%;
-    pointer-events: none;
 }
 
-#ring-outer { width: 280px; height: 280px; animation: rotate 40s linear infinite; }
-#ring-inner { width: 200px; height: 200px; animation: rotate 25s linear reverse infinite; }
+#ring-outer { width: 280px; height: 280px; }
+#ring-inner { width: 200px; height: 200px; }
 
-#member-orbit-field {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    animation: rotate 30s linear infinite;
-}
+@keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-.orbit-node {
-    position: absolute;
-    width: 38px;
-    height: 38px;
+/* Online Pulse */
+.pulse-dot {
+    width: 8px; height: 8px;
+    background: #50c878;
     border-radius: 50%;
-    border: 2px solid var(--neon-cyan);
-    background-size: cover;
-    background-position: center;
-    box-shadow: 0 0 10px var(--neon-cyan);
-    animation: counterRotate 30s linear infinite;
-    z-index: 10;
+    display: inline-block;
+    margin-right: 10px;
+    box-shadow: 0 0 10px #50c878;
+    animation: pulse 2s infinite;
 }
 
-@keyframes rotate { 
-    from { transform: rotate(0deg); } 
-    to { transform: rotate(360deg); } 
-}
-
-@keyframes counterRotate { 
-    from { transform: rotate(0deg); } 
-    to { transform: rotate(-360deg); } 
-}
-
-/* --- TEXT EFFECTS --- */
-.glitch-title {
-    font-size: 20px;
-    text-align: center;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    margin-bottom: 30px;
-    animation: glitch 2s infinite;
-}
-
-@keyframes glitch {
-    0% { text-shadow: 2px 0 var(--neon-red), -2px 0 var(--neon-blue); }
-    50% { text-shadow: -2px 0 var(--neon-red), 2px 0 var(--neon-blue); }
-    100% { text-shadow: 2px 0 var(--neon-red), -2px 0 var(--neon-blue); }
-}
-
-.bottom-stats {
-    font-size: 10px;
-    margin-top: 20px;
-    letter-spacing: 2px;
-    color: var(--neon-blue);
-}
-
-/* --- THE RADAR SWEEP LAYER --- */
-#orbit-viewport::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 280px; /* Matches the outer ring size */
-    height: 280px;
-    margin-top: -140px;
-    margin-left: -140px;
-    background: conic-gradient(
-        from 0deg,
-        transparent 0%,
-        rgba(0, 243, 255, 0.2) 10%,
-        rgba(0, 243, 255, 0.6) 15%,
-        transparent 20%
-    );
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 5;
-    animation: radar-sweep 4s linear infinite;
-}
-
-/* --- THE GLOWING RADAR BEAM --- */
-@keyframes radar-sweep {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* --- ORBIT NODE ENHANCEMENTS --- */
-.orbit-node {
-    position: absolute;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    border: 2px solid var(--neon-cyan);
-    background-size: cover;
-    background-position: center;
-    box-shadow: 0 0 10px var(--neon-cyan);
-    z-index: 10;
-    /* This makes the avatars spin opposite the ring so they stay upright */
-    animation: counterRotate 30s linear infinite;
-}
-
-/* Pulse effect for the "Blips" */
-.orbit-node::after {
-    content: '';
-    position: absolute;
-    top: -5px; left: -5px; right: -5px; bottom: -5px;
-    border: 1px solid var(--neon-cyan);
-    border-radius: 50%;
-    animation: blip-pulse 2s ease-out infinite;
-    opacity: 0;
-}
-
-@keyframes blip-pulse {
-    0% { transform: scale(0.8); opacity: 0.8; }
-    100% { transform: scale(1.5); opacity: 0; }
-}
-
-/* --- GHOST RING PULSE --- */
-.ring {
-    position: absolute;
-    border: 1px dashed rgba(0, 243, 255, 0.2);
-    border-radius: 50%;
-    pointer-events: none;
-    transition: border-color 0.3s;
-}
-
-#ring-outer { 
-    width: 280px; 
-    height: 280px; 
-    animation: rotate 40s linear infinite; 
-    border-color: rgba(0, 243, 255, 0.4);
-}
-
-#ring-inner { 
-    width: 200px; 
-    height: 200px; 
-    animation: rotate 25s linear reverse infinite; 
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.5; }
+    100% { transform: scale(1); opacity: 1; }
 }
