@@ -1,62 +1,55 @@
-[
-  {
-    "id": "683212245311946795",
-    "name": "midnightcane",
-    "avatar": "https://cdn.discordapp.com/avatars/683212245311946795/4c209f8bf87ab338314860667bcb9743.png?size=128"
-  },
-  {
-    "id": "959431187955351623",
-    "name": "venomsong",
-    "avatar": "https://cdn.discordapp.com/avatars/959431187955351623/957a1a78600aa6b69194c8ecbc4a5a53.png?size=128"
-  },
-  {
-    "id": "183900012705480705",
-    "name": ".bandicoot",
-    "avatar": "https://cdn.discordapp.com/avatars/183900012705480705/27d89961a5a7933c7152c73f6c666fe0.png?size=128"
-  },
-  {
-    "id": "1398034278662537337",
-    "name": "tekking_07_12417",
-    "avatar": "https://cdn.discordapp.com/avatars/1398034278662537337/b880ec43f33d1f92f867f5108342babd.png?size=128"
-  },
-  {
-    "id": "1388087779174383719",
-    "name": "baothelamia",
-    "avatar": "https://cdn.discordapp.com/avatars/1388087779174383719/019dcdbb1749ab55fae73b8c66de599e.png?size=128"
-  },
-  {
-    "id": "287809220210851851",
-    "name": "chosentoine",
-    "avatar": "https://cdn.discordapp.com/avatars/287809220210851851/c6f04175b8a487834b2571f0b0c2b749.png?size=128"
-  },
-  {
-    "id": "368838581009252362",
-    "name": "luffy4567.",
-    "avatar": "https://cdn.discordapp.com/avatars/368838581009252362/7ab9d4707260433e3ab0391e1fcffd41.png?size=128"
-  },
-  {
-    "id": "916731589893959710",
-    "name": ".gamingwpro",
-    "avatar": "https://cdn.discordapp.com/avatars/916731589893959710/728d7321c45d048aed8877f99b336731.png?size=128"
-  },
-  {
-    "id": "226914498089451520",
-    "name": "maihunnids",
-    "avatar": "https://cdn.discordapp.com/avatars/226914498089451520/245f81deedb6225809402c70384193be.png?size=128"
-  },
-  {
-    "id": "531178595130015755",
-    "name": "bluelumine",
-    "avatar": "https://cdn.discordapp.com/avatars/531178595130015755/428d7663cb7c7a8e814d27b1e84634e4.png?size=128"
-  },
-  {
-    "id": "652983918013841429",
-    "name": "loli_f.b.i",
-    "avatar": "https://cdn.discordapp.com/avatars/652983918013841429/0057d788d07bced04129ec11fc2fa4cd.png?size=128"
-  },
-  {
-    "id": "556714289453465601",
-    "name": "tohkatron",
-    "avatar": "https://cdn.discordapp.com/avatars/556714289453465601/a_950a9537459237e9777697beb05a7e20.png?size=128"
-  }
-]
+{
+  "lastUpdated": "2026-03-08T19:01:37.429Z",
+  "members": [
+    {
+      "id": "683212245311946795",
+      "name": "midnightcane",
+      "avatar": "https://cdn.discordapp.com/avatars/683212245311946795/4c209f8bf87ab338314860667bcb9743.png?size=128"
+    },
+    {
+      "id": "959431187955351623",
+      "name": "venomsong",
+      "avatar": "https://cdn.discordapp.com/avatars/959431187955351623/957a1a78600aa6b69194c8ecbc4a5a53.png?size=128"
+    },
+    {
+      "id": "183900012705480705",
+      "name": ".bandicoot",
+      "avatar": "https://cdn.discordapp.com/avatars/183900012705480705/27d89961a5a7933c7152c73f6c666fe0.png?size=128"
+    },
+    {
+      "id": "1398034278662537337",
+      "name": "tekking_07_12417",
+      "avatar": "https://cdn.discordapp.com/avatars/1398034278662537337/b880ec43f33d1f92f867f5108342babd.png?size=128"
+    },
+    {
+      "id": "652983918013841429",
+      "name": "loli_f.b.i",
+      "avatar": "https://cdn.discordapp.com/avatars/652983918013841429/0057d788d07bced04129ec11fc2fa4cd.png?size=128"
+    },
+    {
+      "id": "531178595130015755",
+      "name": "bluelumine",
+      "avatar": "https://cdn.discordapp.com/avatars/531178595130015755/428d7663cb7c7a8e814d27b1e84634e4.png?size=128"
+    },
+    {
+      "id": "1388087779174383719",
+      "name": "baothelamia",
+      "avatar": "https://cdn.discordapp.com/avatars/1388087779174383719/019dcdbb1749ab55fae73b8c66de599e.png?size=128"
+    },
+    {
+      "id": "287809220210851851",
+      "name": "chosentoine",
+      "avatar": "https://cdn.discordapp.com/avatars/287809220210851851/c6f04175b8a487834b2571f0b0c2b749.png?size=128"
+    },
+    {
+      "id": "916731589893959710",
+      "name": ".gamingwpro",
+      "avatar": "https://cdn.discordapp.com/avatars/916731589893959710/728d7321c45d048aed8877f99b336731.png?size=128"
+    },
+    {
+      "id": "226914498089451520",
+      "name": "maihunnids",
+      "avatar": "https://cdn.discordapp.com/avatars/226914498089451520/245f81deedb6225809402c70384193be.png?size=128"
+    }
+  ]
+}
