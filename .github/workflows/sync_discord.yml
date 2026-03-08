@@ -2,14 +2,14 @@ name: Update Staff Database
 
 on:
   schedule:
-    - cron: '0 * * * *' # Runs once an hour automatically
-  workflow_dispatch: # Allows you to click a "Run" button manually in GitHub
+    - cron: '*/15 * * * *' # TRIGGER: Runs every 15 minutes
+  workflow_dispatch: # Allows manual override via the Actions tab
 
 jobs:
   fetch-discord-data:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Important: Allows the bot to push code to your repo
+      contents: write 
     
     steps:
       - name: Checkout Repository
@@ -22,12 +22,12 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            // Your exact staff IDs
+            // Updated Staff List: Owner, Co-Owner, S-Admin, Admin, + 6 Mods
             const staffIds = [
               "683212245311946795", "959431187955351623", "183900012705480705", 
-              "1398034278662537337", "1388087779174383719", "287809220210851851", 
-              "368838581009252362", "916731589893959710", "226914498089451520", 
-              "531178595130015755", "652983918013841429", "556714289453465601"
+              "1398034278662537337", "652983918013841429", "531178595130015755", 
+              "1388087779174383719", "287809220210851851", "916731589893959710", 
+              "226914498089451520"
             ];
             
             let staffData = [];
@@ -44,10 +44,15 @@ jobs:
                     ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128` 
                     : 'https://archive.org/download/discord_default_avatars/gray.png';
                     
-                  staffData.push({ id: user.id, name: user.username, avatar: avatarUrl });
+                  staffData.push({ 
+                    id: user.id, 
+                    name: user.username, 
+                    avatar: avatarUrl 
+                  });
+                  console.log(`SYNCED: ${user.username}`);
                 }
               } catch (error) {
-                console.log(`Failed to fetch ${id}`, error);
+                console.log(`FAILED_ID: ${id}`, error);
               }
             }
             
@@ -55,8 +60,8 @@ jobs:
 
       - name: Commit and Push Changes
         run: |
-          git config --global user.name "GitHub Action Bot"
+          git config --global user.name "Liquid-Glass-Bot"
           git config --global user.email "actions@github.com"
           git add staff_data.json
-          git commit -m "Automated staff data sync" || echo "No changes to commit"
+          git commit -m "DATA_SYNC: Hierarchy profiles updated" || echo "No changes to commit"
           git push
