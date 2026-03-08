@@ -2,8 +2,8 @@ name: Update Staff Database
 
 on:
   schedule:
-    - cron: '*/15 * * * *' # TRIGGER: Runs every 15 minutes
-  workflow_dispatch: # Allows manual override via the Actions tab
+    - cron: '*/15 * * * *' 
+  workflow_dispatch: 
 
 jobs:
   fetch-discord-data:
@@ -22,7 +22,6 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            // Updated Staff List: Owner, Co-Owner, S-Admin, Admin, + 6 Mods
             const staffIds = [
               "683212245311946795", "959431187955351623", "183900012705480705", 
               "1398034278662537337", "652983918013841429", "531178595130015755", 
@@ -30,7 +29,11 @@ jobs:
               "226914498089451520"
             ];
             
-            let staffData = [];
+            // Structured as an object to hold the timestamp
+            let staffData = {
+              lastUpdated: new Date().toISOString(),
+              members: []
+            };
             
             for (const id of staffIds) {
               try {
@@ -44,12 +47,11 @@ jobs:
                     ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128` 
                     : 'https://archive.org/download/discord_default_avatars/gray.png';
                     
-                  staffData.push({ 
+                  staffData.members.push({ 
                     id: user.id, 
                     name: user.username, 
                     avatar: avatarUrl 
                   });
-                  console.log(`SYNCED: ${user.username}`);
                 }
               } catch (error) {
                 console.log(`FAILED_ID: ${id}`, error);
@@ -63,5 +65,10 @@ jobs:
           git config --global user.name "Liquid-Glass-Bot"
           git config --global user.email "actions@github.com"
           git add staff_data.json
-          git commit -m "DATA_SYNC: Hierarchy profiles updated" || echo "No changes to commit"
+          # Only commit if the file actually changed
+          git commit -m "DATA_SYNC: Update Staff and Timestamp" || exit 0
+          
+          # REBASE FIX: Pulls latest changes before pushing to avoid "Rejected" errors
+          git pull --rebase origin main
+          
           git push
