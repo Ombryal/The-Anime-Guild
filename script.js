@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initBattery();
     initFilters();
     initModals();
-    initDraggable();
+    initDraggable();          // now checks viewport width
     initAudioOnFirstInteraction();
 
     syncSystem();
@@ -184,9 +184,11 @@ function initModals() {
     });
 }
 
-// ========== NEW FEATURE: DRAGGABLE WINDOWS (interact.js) ==========
+// ========== NEW FEATURE: DRAGGABLE WINDOWS (interact.js) – DISABLED ON MOBILE ==========
 function initDraggable() {
-    if (typeof interact === 'undefined') return;
+    // Only enable on desktop (width > 768px)
+    if (window.innerWidth <= 768 || typeof interact === 'undefined') return;
+    
     interact('.draggable').draggable({
         inertia: true,
         modifiers: [
@@ -457,4 +459,4 @@ function updateAdaptiveTheme() {
             if (i === 2) blob.style.filter = 'brightness(1.2)';
         });
     }
-                    }
+        }
