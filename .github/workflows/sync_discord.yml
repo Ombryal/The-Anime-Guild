@@ -15,11 +15,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Fetch Profiles and Roles from Discord
+      - name: Fetch Discord Data (Members + Roles)
         uses: actions/github-script@v6
         env:
           BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
-          GUILD_ID: '1433645535583277129'   # Your server ID – same as in JS
+          GUILD_ID: '1433645535583277129'
         with:
           script: |
             const fs = require('fs');
@@ -27,55 +27,63 @@ jobs:
             const botToken = process.env.BOT_TOKEN;
 
             const staffIds = [
-              "683212245311946795", "959431187955351623", "183900012705480705", 
-              "1398034278662537337", "652983918013841429", "531178595130015755", 
-              "1388087779174383719", "287809220210851851", "916731589893959710", 
+              "683212245311946795", "959431187955351623", "183900012705480705",
+              "1398034278662537337", "652983918013841429", "531178595130015755",
+              "1388087779174383719", "287809220210851851", "916731589893959710",
               "226914498089451520"
             ];
 
-            // Base structure with timestamp
+            // 1. Fetch all guild roles (for mapping)
+            const rolesRes = await fetch(`https://discord.com/api/v10/guilds/${guildId}/roles`, {
+              headers: { 'Authorization': `Bot ${botToken}` }
+            });
+            const roles = await rolesRes.json();
+            // Build a map id -> { name, color }
+            const roleMap = {};
+            roles.forEach(role => {
+              roleMap[role.id] = { name: role.name, color: role.color };
+            });
+
+            // 2. Fetch each staff member's guild member info (roles, nick)
             let staffData = {
               lastUpdated: new Date().toISOString(),
+              roles: roleMap,          // include full role mapping
               members: []
             };
 
-            // Optional: fetch guild roles list to map IDs to names later (if needed)
-            // We'll store role IDs for now; you can map them in the frontend.
             for (const id of staffIds) {
               try {
-                // 1. Get base user info (username, avatar)
+                // Base user info
                 const userRes = await fetch(`https://discord.com/api/v10/users/${id}`, {
                   headers: { 'Authorization': `Bot ${botToken}` }
                 });
                 const user = await userRes.json();
-                if (!user.id) continue;  // skip if user not found
+                if (!user.id) continue;
 
-                // 2. Get guild member details (roles, nickname)
+                // Guild member info
                 const memberRes = await fetch(`https://discord.com/api/v10/guilds/${guildId}/members/${id}`, {
                   headers: { 'Authorization': `Bot ${botToken}` }
                 });
                 const member = memberRes.ok ? await memberRes.json() : {};
 
-                // Build avatar URL
-                const avatarUrl = user.avatar 
-                  ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128` 
+                const avatarUrl = user.avatar
+                  ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128`
                   : 'https://archive.org/download/discord_default_avatars/gray.png';
 
                 staffData.members.push({
                   id: user.id,
                   name: user.username,
                   avatar: avatarUrl,
-                  nickname: member.nick || null,                // server nickname (if any)
-                  roles: member.roles || []                     // array of role IDs
+                  nickname: member.nick || null,
+                  roles: member.roles || []      // array of role IDs
                 });
 
-                console.log(`Fetched ${user.username} (${id}) with ${member.roles?.length || 0} roles`);
+                console.log(`Fetched ${user.username} (${id})`);
               } catch (error) {
                 console.log(`FAILED_ID: ${id}`, error.message);
               }
             }
 
-            // Write the enriched data to staff_data.json
             fs.writeFileSync('staff_data.json', JSON.stringify(staffData, null, 2));
 
       - name: Commit and Push Changes
