@@ -613,34 +613,189 @@ body::after {
         -webkit-overflow-scrolling: touch;
         height: 100%;
     }
+
     .interface-frame {
         max-height: none;
         overflow-y: visible;
-        padding-bottom: 30px;
-    }
-    .mod-deployment-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-        max-width: 100%;
-        justify-items: center;
-    }
-    .tier-green {
-        width: 70px;
-        height: 70px;
-    }
-    .node-container {
+        padding: 10px;
+        margin: 20px auto;
         width: 100%;
-        max-width: 280px;
     }
+
+    .top-header {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .header-content {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .glass-title {
+        font-size: 6vw;
+        letter-spacing: 3px;
+    }
+
+    /* Fix for huge boxes – make them responsive */
+    .node-container {
+        width: 100% !important;
+        max-width: 260px;
+        margin: 0 auto;
+        padding: 12px 15px;
+    }
+
+    /* Owner and co-owner should stack vertically */
     .dual-rank {
         flex-direction: column;
         align-items: center;
+        gap: 15px;
+        width: 100%;
     }
+
+    .rank-tier {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    /* Ensure all node containers are centered */
+    .hierarchy-tree {
+        width: 100%;
+        padding: 0 10px;
+    }
+
+    /* Mod grid adjustments */
+    .mod-deployment-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    .tier-green {
+        width: 70px !important;
+        height: 70px !important;
+        padding: 0;
+    }
+
+    .tier-green .node-pfp {
+        width: 60px;
+        height: 60px;
+    }
+
+    /* Stats grid */
     .stats-grid {
         grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 15px 10px;
+    }
+
+    .stat-value {
+        font-size: 22px;
+    }
+
+    /* Filter bar */
+    .filter-bar {
+        padding: 8px;
+        gap: 5px;
+    }
+
+    .filter-btn {
+        padding: 5px 10px;
+        font-size: 10px;
+    }
+
+    /* System tray */
+    .system-tray {
+        top: 10px;
+        right: 10px;
+        font-size: 11px;
+        padding: 5px 10px;
+    }
+
+    /* Terminal */
+    .system-terminal {
+        margin-top: 20px;
+        font-size: 10px;
+    }
+
+    .terminal-body {
+        max-height: 100px;
+    }
+
+    /* Orbit */
+    .orbit-complex {
+        margin-top: 30px;
+        padding: 20px;
+    }
+
+    #orbit-viewport {
+        width: 250px;
+        height: 250px;
+    }
+
+    #ring-outer {
+        width: 230px;
+        height: 230px;
+    }
+
+    #ring-inner {
+        width: 160px;
+        height: 160px;
+    }
+
+    .orbit-node {
+        width: 30px;
+        height: 30px;
+    }
+
+    /* Modals */
+    .modal-content {
+        padding: 15px;
+    }
+
+    #stream-frame {
+        height: 200px;
+    }
+
+    .user-avatar {
+        width: 50px;
+        height: 50px;
+    }
+
+    .user-name {
+        font-size: 18px;
+    }
+
+    /* Disable draggable on mobile */
+    .draggable {
+        cursor: default;
+        transform: none !important; /* prevent any transform from dragging */
+    }
+    .draggable:active {
+        cursor: default;
+        box-shadow: none;
     }
 }
 
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mod-deployment-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .node-container {
+        max-width: 220px;
+    }
+}
 @media (max-width: 480px) {
     .stats-grid {
         grid-template-columns: 1fr;
