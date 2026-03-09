@@ -340,6 +340,7 @@ function showUserModal(node, live, arch) {
     const displayName = staffMember?.nickname || user.name || 'UNKNOWN';
     document.getElementById('modal-username').textContent = displayName.toUpperCase();
 
+    // Role badge
     let roleBadge = 'MEMBER';
     let badgeClass = '';
     if (node.classList.contains('tier-gold')) { roleBadge = 'SUPREME OWNER'; badgeClass = 'owner'; }
@@ -352,6 +353,7 @@ function showUserModal(node, live, arch) {
     roleSpan.textContent = roleBadge;
     roleSpan.className = `user-role ${badgeClass}`;
 
+    // Activity
     const activityDiv = document.getElementById('modal-activity');
     if (isOnline && live.game) {
         const game = live.game.name;
@@ -370,14 +372,38 @@ function showUserModal(node, live, arch) {
         activityDiv.innerHTML = '<div class="user-activity">User is offline</div>';
     }
 
+    // Discord roles as chips
     const rolesDiv = document.getElementById('modal-discord-roles');
+    rolesDiv.innerHTML = ''; // clear
+
     if (staffMember && staffMember.roles && staffMember.roles.length > 0) {
-        const roleNames = staffMember.roles
-            .map(roleId => staffDatabase.roles[roleId]?.name || roleId)
-            .join(' • ');
-        rolesDiv.innerHTML = `<strong>DISCORD ROLES:</strong> ${roleNames}`;
+        staffMember.roles.forEach(roleId => {
+            const role = staffDatabase.roles[roleId];
+            if (!role) return;
+
+            // Convert Discord decimal color to hex
+            let bgColor = '#2f3136'; // default gray
+            let textColor = '#dcddde';
+            if (role.color && role.color !== 0) {
+                const hexColor = '#' + role.color.toString(16).padStart(6, '0');
+                bgColor = hexColor;
+                // Determine text color based on brightness (simple)
+                const r = (role.color >> 16) & 255;
+                const g = (role.color >> 8) & 255;
+                const b = role.color & 255;
+                const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+                textColor = brightness > 128 ? '#000000' : '#ffffff';
+            }
+
+            const chip = document.createElement('span');
+            chip.className = 'role-chip';
+            chip.style.backgroundColor = bgColor;
+            chip.style.color = textColor;
+            chip.textContent = role.name;
+            rolesDiv.appendChild(chip);
+        });
     } else {
-        rolesDiv.innerHTML = '<strong>DISCORD ROLES:</strong> No roles';
+        rolesDiv.innerHTML = '<span class="role-chip">No roles</span>';
     }
 
     modal.style.display = 'flex';
