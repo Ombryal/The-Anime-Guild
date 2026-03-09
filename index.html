@@ -2,31 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Liquid Glass | Command Center</title>
-    <!-- PWA manifest -->
     <link rel="manifest" href="manifest.json">
-    <!-- Main stylesheet -->
     <link rel="stylesheet" href="style.css">
-    <!-- Interact.js for draggable windows -->
     <script src="https://cdn.jsdelivr.net/npm/interactjs@1.10.11/dist/interact.min.js"></script>
 </head>
 <body>
-    <!-- Background blobs -->
     <div class="glass-background">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
         <div class="blob blob-3"></div>
     </div>
 
-    <!-- System Tray (clock & battery) -->
     <div class="system-tray glass">
         <span id="live-clock">00:00:00</span>
         <span id="battery-level">🔋 87%</span>
     </div>
 
     <div class="interface-frame">
-        <!-- Header -->
         <header class="top-header glass">
             <div class="header-content">
                 <h1 class="glass-title">CORE_HIERARCHY</h1>
@@ -37,7 +31,6 @@
             </div>
         </header>
 
-        <!-- Filter Bar (role/status toggles) -->
         <div class="filter-bar glass">
             <button class="filter-btn active" data-filter="all">ALL</button>
             <button class="filter-btn" data-filter="online">ONLINE</button>
@@ -46,14 +39,11 @@
             <button class="filter-btn" data-filter="owners">OWNERS</button>
         </div>
 
-        <!-- Stats Grid (real data) -->
         <div class="stats-grid">
             <div class="stat-card glass">
                 <span class="stat-label">STAFF ONLINE</span>
                 <span class="stat-value" id="staff-online">0</span>
-                <div class="progress-bar">
-                    <div class="progress-bar-fill" id="staff-progress" style="width:0%"></div>
-                </div>
+                <div class="progress-bar"><div class="progress-bar-fill" id="staff-progress" style="width:0%"></div></div>
             </div>
             <div class="stat-card glass">
                 <span class="stat-label">TOTAL STAFF</span>
@@ -79,6 +69,7 @@
                         <div class="node-info">
                             <span class="role-tag">SUPREME_OWNER</span>
                             <span class="username">FETCHING...</span>
+                            <span class="status-dot"></span>
                         </div>
                     </div>
                 </div>
@@ -91,17 +82,19 @@
                         <div class="node-info">
                             <span class="role-tag">CO_OWNER</span>
                             <span class="username">FETCHING...</span>
+                            <span class="status-dot"></span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Super Admin & Admin Unit (dual) -->
+                <!-- Super Admin & Admin -->
                 <div class="rank-tier dual-rank">
                     <div class="node-container glass tier-purple" data-id="183900012705480705">
                         <div class="node-pfp"></div>
                         <div class="node-info">
                             <span class="role-tag">SUPER_ADMIN</span>
                             <span class="username">FETCHING...</span>
+                            <span class="status-dot"></span>
                         </div>
                     </div>
                     <div class="node-container glass tier-blue" data-id="1398034278662537337">
@@ -109,55 +102,66 @@
                         <div class="node-info">
                             <span class="role-tag">ADMIN_UNIT</span>
                             <span class="username">FETCHING...</span>
+                            <span class="status-dot"></span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Mod Section Label -->
                 <div class="mod-section-label">TACTICAL_MOD_UNITS</div>
 
-                <!-- Mod Grid (draggable) - FIXED: added missing .node-pfp and .node-info for each mod -->
+                <!-- Mod Grid -->
                 <div class="mod-deployment-grid draggable" id="mod-grid">
                     <div class="node-container glass tier-green mod" data-id="652983918013841429">
                         <div class="node-pfp"></div>
                         <div class="node-info">
+                            <span class="role-tag">MOD</span>
                             <span class="username"></span>
+                            <span class="status-dot"></span>
                         </div>
                     </div>
                     <div class="node-container glass tier-green mod" data-id="531178595130015755">
                         <div class="node-pfp"></div>
                         <div class="node-info">
+                            <span class="role-tag">MOD</span>
                             <span class="username"></span>
+                            <span class="status-dot"></span>
                         </div>
                     </div>
                     <div class="node-container glass tier-green mod" data-id="1388087779174383719">
                         <div class="node-pfp"></div>
                         <div class="node-info">
+                            <span class="role-tag">MOD</span>
                             <span class="username"></span>
+                            <span class="status-dot"></span>
                         </div>
                     </div>
                     <div class="node-container glass tier-green mod" data-id="287809220210851851">
                         <div class="node-pfp"></div>
                         <div class="node-info">
+                            <span class="role-tag">MOD</span>
                             <span class="username"></span>
+                            <span class="status-dot"></span>
                         </div>
                     </div>
                     <div class="node-container glass tier-green mod" data-id="916731589893959710">
                         <div class="node-pfp"></div>
                         <div class="node-info">
+                            <span class="role-tag">MOD</span>
                             <span class="username"></span>
+                            <span class="status-dot"></span>
                         </div>
                     </div>
                     <div class="node-container glass tier-green mod" data-id="226914498089451520">
                         <div class="node-pfp"></div>
                         <div class="node-info">
+                            <span class="role-tag">MOD</span>
                             <span class="username"></span>
+                            <span class="status-dot"></span>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Radar / Orbit Complex (draggable) -->
             <section class="orbit-complex glass draggable" id="orbit-radar">
                 <div id="orbit-viewport">
                     <div class="radar-sweep"></div>
@@ -173,7 +177,6 @@
                 </div>
             </section>
 
-            <!-- System Logs Terminal -->
             <div class="system-terminal glass">
                 <div class="terminal-header">SYSTEM LOGS</div>
                 <div class="terminal-body" id="log-body">
@@ -184,11 +187,9 @@
         </main>
     </div>
 
-    <!-- Audio feedback elements -->
     <audio id="hover-sound" preload="auto" src="sounds/hover.mp3"></audio>
     <audio id="click-sound" preload="auto" src="sounds/click.mp3"></audio>
 
-    <!-- Modal for stream preview -->
     <div id="stream-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="document.getElementById('stream-modal').style.display='none'">&times;</span>
@@ -196,7 +197,6 @@
         </div>
     </div>
 
-    <!-- Modal for user details -->
     <div id="user-detail-modal" class="modal user-detail-modal">
         <div class="modal-content">
             <span class="close-modal" onclick="document.getElementById('user-detail-modal').style.display='none'">&times;</span>
@@ -207,12 +207,8 @@
                     <span class="user-role" id="modal-role">ROLE</span>
                 </div>
             </div>
-            <div class="user-activity" id="modal-activity">
-                <!-- Activity info will be inserted here -->
-            </div>
-            <div class="user-discord-roles" id="modal-discord-roles">
-                <!-- Discord roles list -->
-            </div>
+            <div class="user-activity" id="modal-activity"></div>
+            <div class="user-discord-roles" id="modal-discord-roles"></div>
         </div>
     </div>
 
