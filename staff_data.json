@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-16T19:56:11.171Z",
+  "lastUpdated": "2026-03-16T20:49:04.624Z",
   "roles": {
     "1433645535583277129": {
       "name": "@everyone",
@@ -394,16 +394,9 @@
     {
       "id": "1398034278662537337",
       "name": "tekking_07_12417",
-      "avatar": "https://cdn.discordapp.com/avatars/1398034278662537337/a9298a99ecfd43c5600226e241be5aaf.png?size=128",
+      "avatar": "https://archive.org/download/discord_default_avatars/gray.png",
       "nickname": null,
-      "roles": [
-        "1455386313644708005",
-        "1467032134761058376",
-        "1433660085090914385",
-        "1457263707758526484",
-        "1467654229299560538",
-        "1457260122651885662"
-      ]
+      "roles": []
     },
     {
       "id": "652983918013841429",
