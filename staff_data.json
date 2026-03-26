@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-26T17:44:32.576Z",
+  "lastUpdated": "2026-03-26T18:42:59.720Z",
   "roles": {
     "1433645535583277129": {
       "name": "@everyone",
@@ -254,8 +254,8 @@
       "color": 12678850
     },
     "1472348485968859319": {
-      "name": "Admin Role Test(Adigar)",
-      "color": 1265246
+      "name": "Role Test",
+      "color": 5264854
     },
     "1473110988562628708": {
       "name": "Rotisserie",
